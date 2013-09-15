@@ -1,0 +1,17 @@
+<html>
+    <body>
+        {.repeated section @}
+            {.section author}
+                <b>{@|html}</b> wrote:
+            {.or}
+                An anonymous person wrote:
+            {.end}
+            <pre>{content|html}</pre>
+        {.end}
+        <form action="" method="post">
+            <div><input type="text" name="author" /></div>
+            <div><textarea name="content" rows="3" cols="60"></textarea></div>
+            <div><input type="submit" value="Sign Guestbook"></div>
+        </form>
+    </body>
+</html>
