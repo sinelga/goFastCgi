@@ -57,10 +57,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	//    template.Execute(resp, fields)
 
 	createfirstpage(resp,req ,locale,themes,host,pathinfo)
-	//	log.Println(req.)
-	//			tempFile, _ := ioutil.TempFile("/tmp", "postcard_vid")
-	//			fmt.Println(tempFile.Name())
-	//	http.ServeFile(resp, req, "/tmp/firstpage.html")
+
 
 }
 
@@ -97,7 +94,6 @@ func createfirstpage(resp http.ResponseWriter, req *http.Request,locale string, 
 	log.Println(themes)
 	log.Println(host)
 	log.Println(pathinfo)
-//	log.Println(queue)
 
 	if _, err := os.Stat("/tmp1/firstpage.html"); err != nil {
 
