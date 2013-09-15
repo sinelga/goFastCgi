@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+//	"fmt"
 //	"html/template"
-	"io/ioutil"
+//	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -58,7 +58,6 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 	createfirstpage(resp,req ,locale,themes,host,pathinfo)
 
-
 }
 
 func main() {
@@ -95,25 +94,26 @@ func createfirstpage(resp http.ResponseWriter, req *http.Request,locale string, 
 	log.Println(host)
 	log.Println(pathinfo)
 
-	if _, err := os.Stat("/tmp1/firstpage.html"); err != nil {
+	htmlfile := string("www/"+host+pathinfo)
+	log.Println(htmlfile )
+	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 			
 			log.Println("file does not exist")
-			http.ServeFile(resp,req,"/tmp/firstpage.html")
+			http.ServeFile(resp,req,"/www/firstpage.html")
 
 			
 
 		} else {
 			// other error
-			log.Println("fileexist")
-			tempFile, _ := ioutil.TempFile("/tmp", "postcard_vid")
-			fmt.Println(tempFile.Name())
+			log.Println("somthing wrong???")
 
 		}
 
 	} else {
 		log.Println("fileexist")
+		http.ServeFile(resp,req,"www/firstpage.html")
 
 	}
 
