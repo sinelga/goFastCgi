@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/fcgi"
 	"os"
+	"createfirstpage"
 )
 
 type FastCGIServer struct{}
@@ -56,7 +57,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 	//    template.Execute(resp, fields)
 
-	createfirstpage(resp,req ,locale,themes,host,pathinfo)
+	checkfirstpage(resp,req ,locale,themes,host,pathinfo)
 
 }
 
@@ -87,21 +88,24 @@ func LoadJson() []map[string]string {
 	return lst
 }
 
-func createfirstpage(resp http.ResponseWriter, req *http.Request,locale string, themes string, host string, pathinfo string) {
+func checkfirstpage(resp http.ResponseWriter, req *http.Request,locale string, themes string, host string, pathinfo string) {
 
 	log.Println(locale)
 	log.Println(themes)
 	log.Println(host)
 	log.Println(pathinfo)
 
-	htmlfile := string("www/"+host+pathinfo)
-	log.Println(htmlfile )
+	htmlfile := string("www/" +locale+"/"+themes+"/"+host+pathinfo)
+//	log.Println(htmlfile )
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 			
 			log.Println("file does not exist")
-			http.ServeFile(resp,req,"/www/firstpage.html")
+			
+			go createfirstpage.CreatePage(locale,themes,host,pathinfo)
+			
+			http.ServeFile(resp,req,"www/firstpage.html")
 
 			
 
@@ -113,7 +117,7 @@ func createfirstpage(resp http.ResponseWriter, req *http.Request,locale string, 
 
 	} else {
 		log.Println("fileexist")
-		http.ServeFile(resp,req,"www/firstpage.html")
+		http.ServeFile(resp,req,htmlfile)
 
 	}
 
