@@ -2,49 +2,55 @@ package main
 
 import (
 	"encoding/json"
-//	"fmt"
-//	"html/template"
-//	"io/ioutil"
+	//	"fmt"
+	//	"html/template"
+	//	"io/ioutil"
+	"createfirstpage"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
-	"createfirstpage"
+	"sync"
+	"database/sql"
+//	_ "github.com/mattn/go-sqlite3"
+	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 )
+
+var startOnce sync.Once
 
 type FastCGIServer struct{}
 
-func serveSingle(pattern string, filename string) {
-    http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, filename)
-    })
-}
+//func serveSingle(pattern string, filename string) {
+//    http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+//        http.ServeFile(w, r, filename)
+//    })
+//}
 
 func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	//	resp.Write([]byte("<h1>Hello,</h1>\n<p>Behold my Go web app.</p>"))
-	
-		themes :=req.Header.Get("X-THEMES")
-		locale :=req.Header.Get("X-LOCALE")
-		host :=req.Header.Get("X-DOMAIN")
-		pathinfo :=req.Header.Get("X-PATHINFO")
-//		queue :=req.Header.Get("X-QUEUE")
+
+	themes := req.Header.Get("X-THEMES")
+	locale := req.Header.Get("X-LOCALE")
+	host := req.Header.Get("X-DOMAIN")
+	pathinfo := req.Header.Get("X-PATHINFO")
+	//		queue :=req.Header.Get("X-QUEUE")
 
 	//	fields := make(map[string] string)
 
-//	lst := LoadJson()
-//	if req.Method == "POST" {
-//		entry := make(map[string]string)
-//		entry["author"] = req.FormValue("author")
-//		entry["content"] = req.FormValue("content")
-//		lst = append(lst, entry)
-//		SaveJson(lst)
-//	}
+	//	lst := LoadJson()
+	//	if req.Method == "POST" {
+	//		entry := make(map[string]string)
+	//		entry["author"] = req.FormValue("author")
+	//		entry["content"] = req.FormValue("content")
+	//		lst = append(lst, entry)
+	//		SaveJson(lst)
+	//	}
 
-//	var tmpl = template.Must(template.New("templateout").Parse("template.html"))
-//	template := template.   .MustParseFiles("template.html", nil)
-//	tmpl := template.Must(template.New("templateout").ParseFiles("template.html"))
-//	tmpl.Execute(resp, lst)
+	//	var tmpl = template.Must(template.New("templateout").Parse("template.html"))
+	//	template := template.   .MustParseFiles("template.html", nil)
+	//	tmpl := template.Must(template.New("templateout").ParseFiles("template.html"))
+	//	tmpl.Execute(resp, lst)
 
 	//    templateout,err := template.New("templateout").Parse("template.html"); err != nil {
 	//
@@ -57,7 +63,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 	//    template.Execute(resp, fields)
 
-	checkfirstpage(resp,req ,locale,themes,host,pathinfo)
+	checkfirstpage(resp, req, locale, themes, host, pathinfo)
 
 }
 
@@ -88,26 +94,28 @@ func LoadJson() []map[string]string {
 	return lst
 }
 
-func checkfirstpage(resp http.ResponseWriter, req *http.Request,locale string, themes string, host string, pathinfo string) {
+func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
 	log.Println(locale)
 	log.Println(themes)
 	log.Println(host)
 	log.Println(pathinfo)
 
-	htmlfile := string("www/" +locale+"/"+themes+"/"+host+pathinfo)
-//	log.Println(htmlfile )
+	startOnce.Do(func() {
+		startones()
+	})
+
+	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
+	//	log.Println(htmlfile )
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
-			
-			log.Println("file does not exist")
-			
-			go createfirstpage.CreatePage(locale,themes,host,pathinfo)
-			
-			http.ServeFile(resp,req,"www/firstpage.html")
 
-			
+			log.Println("file does not exist")
+
+			go createfirstpage.CreatePage(locale, themes, host, pathinfo)
+
+			http.ServeFile(resp, req, "www/firstpage.html")
 
 		} else {
 			// other error
@@ -117,8 +125,38 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request,locale string, t
 
 	} else {
 		log.Println("fileexist")
-		http.ServeFile(resp,req,htmlfile)
+		http.ServeFile(resp, req, htmlfile)
 
 	}
 
+}
+
+func startones() {
+
+	log.Println("startones")
+	db, err := sql.Open("sqlite3", "singo.db")
+	if err != nil {
+		log.Fatal(err)
+		
+	}
+//	log.Println("startones2")
+
+	rows, err := db.Query("select keyword from keywords")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var keyword string
+		rows.Scan(&keyword)
+		log.Println(keyword)
+	
+	}
+	rows.Close()
+
+	//	c.Infof("Start Ones")
+	//	keywordskeystart := k.GetKeywords(c)
+	//	phraseskeystart := ph.GetPhrases(c)
+	//
+	//	return phraseskeystart, keywordskeystart
 }
