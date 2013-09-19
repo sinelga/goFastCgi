@@ -8,7 +8,11 @@ import (
 	//	"encoding/json"
 	//	"io"
 	"bytes"
+	"comutils"
 	d "domains"
+	"math/rand"
+	"time"
+	"titlegen"
 )
 
 var index = template.Must(template.ParseFiles(
@@ -16,7 +20,7 @@ var index = template.Must(template.ParseFiles(
 	"templ/index.html",
 ))
 
-func CreatePage(locale string, themes string, host string, pathinfo string) {
+func CreatePage(locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
 	log.Println(htmlfile)
@@ -33,37 +37,47 @@ func CreatePage(locale string, themes string, host string, pathinfo string) {
 		panic(err)
 	}
 
-	//	b := []byte("hellø")
-	//	lst := make([]map[string]string, 0)
-	//	filej, err := os.Open("data.json")
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//
-	//	json := json.NewDecoder(filej)
-	//	json.Decode(&lst)
-	//	file.Close()
-
-	site := string("porno.com")
+//	site := string("porno.com")
 	ext := string(".html")
 
 	newsentslice := []string{"llslslslsls", "222222222222222222", "3333333333333333"}
-	somekeywords := []string{"porno", "seksi", "pillu", "dildo", "fack", "sex"}
-	upcasesomekeywords := []string{"Porno", "Seksi", "Pillu", "Dildo", "Fack", "Sex"}
-	title := string("Seksi chat")
-	somephrases := []string{"frase   111111", "frase 2222", "frase 3333", "frase 444", "frase 55", "frase 6666", "frase 777", "frase 8888"}
+	destkey := make([]string, len(keywords))
 
-	webinfo := d.WebInfo{
-		Site:       site,
-		Ext:        ext,
-		Sentences:  newsentslice,
-		Keywords:   somekeywords,
-		UpKeywords: upcasesomekeywords,
-		Title:      title,
-		Phrases:    somephrases,
+	rand.Seed(time.Now().UTC().UnixNano())
+	permkey := rand.Perm(len(keywords))
+
+	for i, v := range permkey {
+		destkey[v] = keywords[i]
 	}
 
-	//	var tmpl = template.Must(template.New("templateout").Parse("template.html"))
+	//	somekeywords := []string{"porno", "seksi", "pillu", "dildo", "fack", "sex"}
+	upcasesomekeywords := make([]string, len(keywords))
+	for i := 0; i < len(keywords); i++ {
+		
+		upcasesomekeywords[i] = comutils.UpcaseInitial(destkey[i])
+	}
+
+	title := comutils.UpcaseInitial(titlegen.GetTitle(locale, themes, host, pathinfo))
+//	somephrases := []string{"frase   111111", "frase 2222", "frase 3333", "frase 444", "frase 55", "frase 6666", "frase 777", "frase 8888"}
+	
+	destphr := make([]string, len(phrases))
+	rand.Seed(time.Now().UTC().UnixNano())
+	permphr := rand.Perm(len(phrases))
+	
+	for i, v := range permphr {
+		destphr[v] = comutils.UpcaseInitial(phrases[i])
+	}
+
+	webinfo := d.WebInfo{
+		Site:       host,
+		Ext:        ext,
+		Sentences:  newsentslice,
+		Keywords:   destkey,
+		UpKeywords: upcasesomekeywords,
+		Title:      title,
+		Phrases:    destphr,
+	}
+
 	webpage := bytes.NewBuffer(nil)
 
 	if err := index.Execute(webpage, webinfo); err != nil {
@@ -72,15 +86,8 @@ func CreatePage(locale string, themes string, host string, pathinfo string) {
 	}
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
-	//	io.Copy(w, webpage)
 
-	//	buf := make([]byte, 1024)
-	//	 w := bytes.NewBuffer(buf)
-	//	 w.Write(b)
 	file.Write(webpagebytes)
 	file.Close()
-
-	//
-	//	b := []byte("hellø")
 
 }

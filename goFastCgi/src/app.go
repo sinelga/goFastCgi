@@ -1,31 +1,23 @@
 package main
 
 import (
-	"encoding/json"
-	//	"fmt"
-	//	"html/template"
-	//	"io/ioutil"
+	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"createfirstpage"
+	"database/sql"
+	"encoding/json"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
 	"sync"
-	"database/sql"
-//	_ "github.com/mattn/go-sqlite3"
-	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 )
 
 var startOnce sync.Once
+var keywordsarr_fi_FI_finance []string
+var phrasesarr_fi_FI_finance []string
 
 type FastCGIServer struct{}
-
-//func serveSingle(pattern string, filename string) {
-//    http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-//        http.ServeFile(w, r, filename)
-//    })
-//}
 
 func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	//	resp.Write([]byte("<h1>Hello,</h1>\n<p>Behold my Go web app.</p>"))
@@ -34,34 +26,6 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	locale := req.Header.Get("X-LOCALE")
 	host := req.Header.Get("X-DOMAIN")
 	pathinfo := req.Header.Get("X-PATHINFO")
-	//		queue :=req.Header.Get("X-QUEUE")
-
-	//	fields := make(map[string] string)
-
-	//	lst := LoadJson()
-	//	if req.Method == "POST" {
-	//		entry := make(map[string]string)
-	//		entry["author"] = req.FormValue("author")
-	//		entry["content"] = req.FormValue("content")
-	//		lst = append(lst, entry)
-	//		SaveJson(lst)
-	//	}
-
-	//	var tmpl = template.Must(template.New("templateout").Parse("template.html"))
-	//	template := template.   .MustParseFiles("template.html", nil)
-	//	tmpl := template.Must(template.New("templateout").ParseFiles("template.html"))
-	//	tmpl.Execute(resp, lst)
-
-	//    templateout,err := template.New("templateout").Parse("template.html"); err != nil {
-	//
-	//    	log.Println("err.Error")
-	////    	fmt.Fprintln(err.Error())
-	//    } else {
-	//
-	//
-	//    }
-
-	//    template.Execute(resp, fields)
 
 	checkfirstpage(resp, req, locale, themes, host, pathinfo)
 
@@ -104,16 +68,26 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	startOnce.Do(func() {
 		startones()
 	})
-
-	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
-	//	log.Println(htmlfile )
+	
+	var pathinfostr string
+	if pathinfo == "/" {
+		
+		pathinfostr ="/index.html"
+	
+	} else {
+		pathinfostr = pathinfo
+	
+	}
+			
+	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
+//	log.Println(htmlfile )
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 
 			log.Println("file does not exist")
 
-			go createfirstpage.CreatePage(locale, themes, host, pathinfo)
+			go createfirstpage.CreatePage(locale, themes, host, pathinfostr,keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance)
 
 			http.ServeFile(resp, req, "www/firstpage.html")
 
@@ -126,9 +100,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	} else {
 		log.Println("fileexist")
 		http.ServeFile(resp, req, htmlfile)
-
 	}
-
 }
 
 func startones() {
@@ -137,26 +109,36 @@ func startones() {
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {
 		log.Fatal(err)
-		
 	}
-//	log.Println("startones2")
 
-	rows, err := db.Query("select keyword from keywords")
+	rows, err := db.Query("select keyword from keywords where locale='fi_FI' and themes='finance'")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		var keyword string
 		rows.Scan(&keyword)
-		log.Println(keyword)
-	
+		keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+
 	}
 	rows.Close()
+	log.Println(len(keywordsarr_fi_FI_finance))
 
-	//	c.Infof("Start Ones")
-	//	keywordskeystart := k.GetKeywords(c)
-	//	phraseskeystart := ph.GetPhrases(c)
-	//
-	//	return phraseskeystart, keywordskeystart
+	rows, err = db.Query("select phrase from phrases where locale='fi_FI' and themes='finance'")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var phrase string
+		rows.Scan(&phrase)
+		phrasesarr_fi_FI_finance = append(phrasesarr_fi_FI_finance, phrase)
+
+	}
+	rows.Close()
+	log.Println(len(phrasesarr_fi_FI_finance))
+
 }
