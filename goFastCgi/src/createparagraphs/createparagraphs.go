@@ -3,18 +3,21 @@ package createparagraphs
 import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
+	"insertsentences"
+	"io/ioutil"
 	"log"
+	ml "marklib"
+	"math/rand"
 	"time"
-
-//	"log"
-
 )
 
 var keywordsarr_fi_FI_finance []string
+var markfile string
 
 func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phrases []string, quant int) {
 
 	log.Println("start CreatePr")
+	prefixLen := 1
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -28,6 +31,25 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 	defer stmt.Close()
 
 	var rs sql.Result
+
+	if locale == "fi_FI" && themes == "finance" {
+
+		markfile = "/home/juno/git/goFastCgi/goFastCgi/fi_FI_finance.txt"
+	}
+
+	rand.Seed(time.Now().UnixNano())
+
+	c := ml.NewChain(prefixLen)
+
+	fData, err := ioutil.ReadFile(markfile)
+
+	if err != nil {
+
+		log.Fatalln(err.Error())
+		return
+	}
+	c.Write(fData)
+
 	for i := 0; i < 3; i++ {
 
 		now := time.Now().Unix()
@@ -37,33 +59,13 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 
 		} else {
 
-			id, _ := rs.LastInsertId()
-			log.Println(id)
+			paragraphid, _ := rs.LastInsertId()
+			log.Println(paragraphid)
+			insertsentences.Insert(db, tx, c, locale, themes, paragraphid)
 
 		}
 
 	}
 	tx.Commit()
-
-	rows, err := db.Query("select Created from paragraphs where locale='fi_FI' and themes='finance'")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var date int64
-		rows.Scan(&date)
-		log.Println(date)
-
-		//		 t := time.Unix(date, 0)
-
-		//		 log.Println(t.Local())
-
-		//		keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
-
-	}
-	rows.Close()
-	//	log.Println(len(keywordsarr_fi_FI_finance))
 
 }
