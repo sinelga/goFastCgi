@@ -4,6 +4,8 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"insertsentences"
+	"comutils"
+	"prtitlegen"
 	"io/ioutil"
 	"log"
 	ml "marklib"
@@ -11,7 +13,7 @@ import (
 	"time"
 )
 
-var keywordsarr_fi_FI_finance []string
+//var keywordsarr_fi_FI_finance []string
 var markfile string
 
 func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phrases []string, quant int) {
@@ -24,7 +26,7 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 		log.Fatal(err)
 	}
 
-	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase) values(?,'fi_FI','finance','lslsls','lslslslsls')")
+	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase) values(?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,23 +39,24 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 		markfile = "/home/juno/git/goFastCgi/goFastCgi/fi_FI_finance.txt"
 	}
 
+	//For start Mark
 	rand.Seed(time.Now().UnixNano())
-
 	c := ml.NewChain(prefixLen)
-
 	fData, err := ioutil.ReadFile(markfile)
-
 	if err != nil {
-
 		log.Fatalln(err.Error())
 		return
 	}
 	c.Write(fData)
-
-	for i := 0; i < 3; i++ {
+	// end For start Mark
+	
+	for i := 0; i < quant; i++ {
+	
+		prtitle := prtitlegen.Generate(keywords)
+		prphrase := comutils.UpcaseInitial(phrases[rand.Intn(len(phrases))])+"."
 
 		now := time.Now().Unix()
-		if rs, err = stmt.Exec(now); err != nil {
+		if rs, err = stmt.Exec(now,locale,themes,prtitle,prphrase); err != nil {
 
 			log.Fatal(err)
 

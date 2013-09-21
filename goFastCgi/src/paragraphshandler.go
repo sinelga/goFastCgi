@@ -7,18 +7,23 @@ import (
 	"createparagraphs"
 )
 
-var keywordsarr_fi_FI_finance []string
-var phrasesarr_fi_FI_finance []string
+var keywordsarr []string
+var phrasesarr []string
 
 
 func main() {
-
+	
+	locale :="fi_FI"
+	themes :="finance"
+	
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	sqlstr := "select keyword from keywords where locale='"+locale +"' and themes='"+themes+"'"
 	
-	rows, err := db.Query("select keyword from keywords where locale='fi_FI' and themes='finance'")
+	rows, err := db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,13 +32,15 @@ func main() {
 	for rows.Next() {
 		var keyword string
 		rows.Scan(&keyword)
-		keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+		keywordsarr = append(keywordsarr, keyword)
 
 	}
 	rows.Close()
-	log.Println(len(keywordsarr_fi_FI_finance))
-
-	rows, err = db.Query("select phrase from phrases where locale='fi_FI' and themes='finance'")
+	log.Println(len(keywordsarr))
+	
+	sqlstr = "select phrase from phrases where locale='"+locale +"' and themes='"+themes+"'"
+	
+	rows, err = db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,13 +49,12 @@ func main() {
 	for rows.Next() {
 		var phrase string
 		rows.Scan(&phrase)
-		phrasesarr_fi_FI_finance = append(phrasesarr_fi_FI_finance, phrase)
+		phrasesarr = append(phrasesarr, phrase)
 
 	}
 	rows.Close()
-	log.Println(len(phrasesarr_fi_FI_finance))
+	log.Println(len(phrasesarr))
 	
-	createparagraphs.CreatePr(db,"fi_FI","finance",keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance,3) 
-
+	createparagraphs.CreatePr(db,locale,themes,keywordsarr,phrasesarr,2) 
 
 }
