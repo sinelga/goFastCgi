@@ -87,7 +87,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 			log.Println("file does not exist")
 
-			go createfirstpage.CreatePage(locale, themes, host, pathinfostr,keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance)
+			createfirstpage.CreatePage(locale, themes, host, pathinfostr,keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance)
 
 			http.ServeFile(resp, req, "www/firstpage.html")
 

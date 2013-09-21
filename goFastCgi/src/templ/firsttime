@@ -21,7 +21,7 @@
   	<h1> {{.Title }}</h1> 
     <h2> {{index .UpKeywords 0}} {{index .Keywords 1}}.</h2> 
     	
-    {{range .Sentences}}{{.}}.&nbsp;{{end}}
+    {{range .Sentences}}&nbsp;{{end}}
                 
     
   </body>

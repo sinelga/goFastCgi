@@ -36,7 +36,7 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 
 	if locale == "fi_FI" && themes == "finance" {
 
-		markfile = "/home/juno/git/goFastCgi/goFastCgi/fi_FI_finance.txt"
+		markfile = "markresources/fi_FI_finance.txt"
 	}
 
 	//For start Mark
