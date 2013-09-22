@@ -12,6 +12,6 @@
     <h1 class="well well-lg">{{.Title }}</h1>
 	<h2 class="well"> {{index .UpKeywords 0}} {{index .Keywords 1}}.</h2> 
     <div class="well well-sm">
-		{{range .Sentences}}{{.}}.&nbsp;{{end}}
+		{{range .Sentences}}{{.}}&nbsp;{{end}}
 	</div>
 {{ end }}

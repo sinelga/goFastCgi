@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	//	"encoding/json"
-	//	"io"
 	"bytes"
 	"comutils"
 	"createfirstpagedb"
@@ -14,12 +12,14 @@ import (
 	"math/rand"
 	"time"
 	"titlegen"
+	"makenewsite"
 )
 
 var index = template.Must(template.ParseFiles(
 	"templ/_base.html",
 	"templ/index.html",
 ))
+var paragraphid int64
 
 func CreatePage(locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
 
@@ -39,7 +39,9 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	}
 
 	ext := string(".html")
-	newsentslice := createfirstpagedb.FindFreeSentences(locale, themes)
+	paragraphid,sentences := createfirstpagedb.FindFreeSentences(locale, themes)
+
+
 	destkey := make([]string, len(keywords))
 
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -65,10 +67,12 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		destphr[v] = comutils.UpcaseInitial(phrases[i])
 	}
 
+	go makenewsite.Makenew(locale,themes,host, pathinfo,title,paragraphid) 
+
 	webinfo := d.WebInfo{
 		Site:       host,
 		Ext:        ext,
-		Sentences:  newsentslice,
+		Sentences:  sentences,
 		Keywords:   destkey,
 		UpKeywords: upcasesomekeywords,
 		Title:      title,

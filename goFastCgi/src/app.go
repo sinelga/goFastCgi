@@ -4,7 +4,7 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"createfirstpage"
 	"database/sql"
-	"encoding/json"
+//	"encoding/json"
 	"log"
 	"net"
 	"net/http"
@@ -20,7 +20,6 @@ var phrasesarr_fi_FI_finance []string
 type FastCGIServer struct{}
 
 func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
-	//	resp.Write([]byte("<h1>Hello,</h1>\n<p>Behold my Go web app.</p>"))
 
 	themes := req.Header.Get("X-THEMES")
 	locale := req.Header.Get("X-LOCALE")
@@ -38,25 +37,6 @@ func main() {
 	fcgi.Serve(listener, srv)
 }
 
-func SaveJson(j []map[string]string) {
-	file, err := os.Create("data.json")
-	if err == nil {
-		json := json.NewEncoder(file)
-		json.Encode(j)
-		file.Close()
-	}
-}
-func LoadJson() []map[string]string {
-	lst := make([]map[string]string, 0)
-	file, err := os.Open("data.json")
-	if err != nil {
-		return lst
-	}
-	json := json.NewDecoder(file)
-	json.Decode(&lst)
-	file.Close()
-	return lst
-}
 
 func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
@@ -88,8 +68,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 			log.Println("file does not exist")
 
 			createfirstpage.CreatePage(locale, themes, host, pathinfostr,keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance)
-
-			http.ServeFile(resp, req, "www/firstpage.html")
+			http.ServeFile(resp, req, htmlfile)
 
 		} else {
 			// other error
@@ -100,6 +79,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	} else {
 		log.Println("fileexist")
 		http.ServeFile(resp, req, htmlfile)
+		
 	}
 }
 

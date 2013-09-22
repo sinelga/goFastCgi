@@ -7,17 +7,17 @@ import (
 	"strconv"
 )
 
-var sentencesid int64
-var sentencesarr []string
+func FindFreeSentences(locale string, themes string) (int64, []string) {
 
-func FindFreeSentences(locale string, themes string) []string{
+	var paragraphid int64
+	var sentencesarr []string
 
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	sqlstr := "select rowid from paragraphs where locale='" + locale + "' and themes='" + themes + "' and Siteid is null limit 1"
-	
+
 	rows, err := db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
@@ -25,14 +25,14 @@ func FindFreeSentences(locale string, themes string) []string{
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&sentencesid)
+		rows.Scan(&paragraphid)
 
 	}
 	rows.Close()
 
-	log.Println(sentencesid)
+	log.Println(paragraphid)
 
-	sqlstr = "select Sentence from sentences where Prid=" + strconv.FormatInt(sentencesid, 10)
+	sqlstr = "select Sentence from sentences where Prid=" + strconv.FormatInt(paragraphid, 10)
 	log.Println(sqlstr)
 
 	rows, err = db.Query(sqlstr)
@@ -40,14 +40,14 @@ func FindFreeSentences(locale string, themes string) []string{
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	
-		for rows.Next() {
+
+	for rows.Next() {
 		var sentence string
 		rows.Scan(&sentence)
 		sentencesarr = append(sentencesarr, sentence)
 
 	}
-	
-	return sentencesarr
+
+	return paragraphid, sentencesarr
 
 }
