@@ -11,6 +11,9 @@ import (
 	"net/http/fcgi"
 	"os"
 	"sync"
+//	"strings"
+	"htmlfileexist"
+	"clean_pathinfo"
 )
 
 var startOnce sync.Once
@@ -48,19 +51,10 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	startOnce.Do(func() {
 		startones()
 	})
-	
-	var pathinfostr string
-	if pathinfo == "/" {
-		
-		pathinfostr ="/index.html"
-	
-	} else {
-		pathinfostr = pathinfo
-	
-	}
+	pathinfostr :=clean_pathinfo.CleanPath(pathinfo)
 			
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-//	log.Println(htmlfile )
+	log.Println(htmlfile )
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
@@ -72,13 +66,14 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 		} else {
 			// other error
-			log.Println("somthing wrong???")
+			log.Println("something wrong???")
 
 		}
 
 	} else {
-		log.Println("fileexist")
+		log.Println("fileexist",htmlfile,"host",host,"pathinfostr",pathinfostr)
 		http.ServeFile(resp, req, htmlfile)
+		go htmlfileexist.StartCheck(htmlfile,host,pathinfostr)
 		
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"comutils"
 	"createfirstpagedb"
-	d "domains"
+	"domains"
 	"math/rand"
 	"time"
 	"titlegen"
@@ -16,13 +16,15 @@ import (
 )
 
 var index = template.Must(template.ParseFiles(
-	"templ/_base.html",
-	"templ/index.html",
+	"templ/_base_first.html",
+	"templ/index_first.html",
 ))
-var paragraphid int64
+
 
 func CreatePage(locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
 
+	var paragraphid int64
+	
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
 	log.Println(htmlfile)
 
@@ -69,7 +71,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 
 	go makenewsite.Makenew(locale,themes,host, pathinfo,title,paragraphid) 
 
-	webinfo := d.WebInfo{
+	webinfo := domains.WebInfo{
 		Site:       host,
 		Ext:        ext,
 		Sentences:  sentences,

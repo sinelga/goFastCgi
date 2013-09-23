@@ -12,7 +12,7 @@ import (
 func GetTitle(locale string, themes string, site string, pathinfo string) string {
 	var title string
 
-	if pathinfo == "/" {
+	if strings.HasSuffix(pathinfo,"index.html") {
 
 		strReader := strings.NewReader(site)
 		reader := csv.NewReader(strReader)
@@ -66,8 +66,6 @@ func getrecords(reader *csv.Reader) []string {
 
 			retrecord = nil
 		}
-
-
 
 		retrecord = record
 

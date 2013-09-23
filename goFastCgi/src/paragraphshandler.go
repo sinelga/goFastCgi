@@ -9,6 +9,7 @@ import (
 
 var keywordsarr []string
 var phrasesarr []string
+var hostsarr []string
 
 
 func main() {
@@ -36,7 +37,7 @@ func main() {
 
 	}
 	rows.Close()
-	log.Println(len(keywordsarr))
+	log.Println("keywords",len(keywordsarr))
 	
 	sqlstr = "select phrase from phrases where locale='"+locale +"' and themes='"+themes+"'"
 	
@@ -53,8 +54,28 @@ func main() {
 
 	}
 	rows.Close()
-	log.Println(len(phrasesarr))
+	log.Println("Phrases",len(phrasesarr))
 	
-	createparagraphs.CreatePr(db,locale,themes,keywordsarr,phrasesarr,2) 
+	
+		sqlstr = "select host from hosts where locale='"+locale +"' and themes='"+themes+"'"
+	
+	rows, err = db.Query(sqlstr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var host string
+		rows.Scan(&host)
+		hostsarr = append(hostsarr, host)
+
+	}
+	rows.Close()
+	log.Println("hosts",len(hostsarr))
+	
+	
+	
+	createparagraphs.CreatePr(db,locale,themes,keywordsarr,phrasesarr,hostsarr,50) 
 
 }

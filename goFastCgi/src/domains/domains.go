@@ -2,6 +2,7 @@ package domains
 
 import (
 	"time"
+//	"domains"
 //	"appengine/datastore"
 )
 
@@ -22,21 +23,6 @@ type Keyword struct {
 	Rating  int
 	Hits int
 }
-//type Keywordkey struct {
-//	Key *datastore.Key
-//	Keyword string
-//
-//}
-//
-//type Phrasekey struct {
-//	Key *datastore.Key
-//	Phrase  string
-//
-//}
-
-//type Restorekeys struct {
-//	Keysarr []*datastore.Key
-//}
 
 type Phrase struct {
 	Locale  string
@@ -58,22 +44,38 @@ type WebInfo struct {
 	Phrases    []string
 }
 
+type Paragraph struct {
+
+	Rowid	int64
+	Siteid int64
+	Created  time.Time
+	Ptitle string
+	Pphrase string
+	Plocallink string
+	Sentences []string	 	
+
+}
+
 type WebContents struct {
+	Rowid	int64
 	Locale   string
 	Themes   string
+	Title	string
 	Site     string
 	PathInfo string
 	Created  time.Time
 	Updated  time.Time
 	Hits     int
 	AllHits  int
-	//	Mtext    []string
-	Mtext   []byte
-	WebPage []byte
-	//	KeyWords []string
-//	KeyWords []byte
-	Title    string
-//	Phrases  []byte
-	Somephrases []string
-	Somekeywords []string
+	Paragraphs []Paragraph
+	
+//	//	Mtext    []string
+//	Mtext   []byte
+//	WebPage []byte
+//	//	KeyWords []string
+////	KeyWords []byte
+//	Title    string
+////	Phrases  []byte
+//	Somephrases []string
+//	Somekeywords []string
 }

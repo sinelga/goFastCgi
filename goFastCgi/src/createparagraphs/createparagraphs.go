@@ -6,6 +6,7 @@ import (
 	"insertsentences"
 	"comutils"
 	"prtitlegen"
+	"p_create_locallink"
 	"io/ioutil"
 	"log"
 	ml "marklib"
@@ -16,7 +17,7 @@ import (
 //var keywordsarr_fi_FI_finance []string
 var markfile string
 
-func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phrases []string, quant int) {
+func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phrases []string, hosts []string,quant int) {
 
 	log.Println("start CreatePr")
 	prefixLen := 1
@@ -26,7 +27,7 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 		log.Fatal(err)
 	}
 
-	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase) values(?,?,?,?,?)")
+	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase,Host,Locallink) values(?,?,?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,9 +55,11 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 	
 		prtitle := prtitlegen.Generate(keywords)
 		prphrase := comutils.UpcaseInitial(phrases[rand.Intn(len(phrases))])+"."
-
+		host := hosts[rand.Intn(len(hosts))]
+		locallink := p_create_locallink.CreateLink(keywords)
+	
 		now := time.Now().Unix()
-		if rs, err = stmt.Exec(now,locale,themes,prtitle,prphrase); err != nil {
+		if rs, err = stmt.Exec(now,locale,themes,prtitle,prphrase,host,locallink); err != nil {
 
 			log.Fatal(err)
 

@@ -26,26 +26,6 @@ var markfile string
 
 func Generate(c *ml.Chain,locale string, themes string) []string {
 	numWords := 1000
-//	prefixLen := 1
-
-//	if locale == "fi_FI" && themes == "finance" {
-//
-//		markfile = "/home/juno/git/goFastCgi/goFastCgi/fi_FI_finance.txt"
-//		//		remotehosturl = "http://singo.jntlserv15.appspot.com/mark"
-//	}
-//
-//	rand.Seed(time.Now().UnixNano())
-//
-////	c := ml.NewChain(prefixLen)
-//
-//	fData, err := ioutil.ReadFile(markfile)
-//
-//	if err != nil {
-//
-//		log.Fatalln(err.Error())
-//		return nil
-//	}
-//	c.Write(fData)
 
 	for i := 0; i < 5; i++ {
 
