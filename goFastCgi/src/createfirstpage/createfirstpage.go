@@ -1,30 +1,29 @@
 package createfirstpage
 
 import (
-	"html/template"
-	"log"
-	"os"
-	"path/filepath"
 	"bytes"
 	"comutils"
 	"createfirstpagedb"
 	"domains"
+	"html/template"
+	"log"
+	"makenewsite"
 	"math/rand"
+	"os"
+	"path/filepath"
 	"time"
 	"titlegen"
-	"makenewsite"
 )
-
-var index = template.Must(template.ParseFiles(
-	"templ/_base_first.html",
-	"templ/index_first.html",
-))
-
 
 func CreatePage(locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
 
+	var index = template.Must(template.ParseFiles(
+		"templ/_base_first.html",
+		"templ/index_first.html",
+	))
+
 	var paragraphid int64
-	
+
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
 	log.Println(htmlfile)
 
@@ -32,19 +31,18 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	log.Println(path)
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
-//		panic(err)
+		//		panic(err)
 		log.Fatal(err)
 	}
 
 	file, err := os.Create(htmlfile)
 	if err != nil {
-//		panic(err)
+		//		panic(err)
 		log.Fatal(err)
 	}
 
 	ext := string(".html")
-	paragraphid,sentences := createfirstpagedb.FindFreeSentences(locale, themes)
-
+	paragraphid, sentences := createfirstpagedb.FindFreeSentences(locale, themes)
 
 	destkey := make([]string, len(keywords))
 
@@ -71,7 +69,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		destphr[v] = comutils.UpcaseInitial(phrases[i])
 	}
 
-	go makenewsite.Makenew(locale,themes,host, pathinfo,title,paragraphid) 
+	go makenewsite.Makenew(locale, themes, host, pathinfo, title, paragraphid)
 
 	webinfo := domains.WebInfo{
 		Site:       host,

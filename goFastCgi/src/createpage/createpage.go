@@ -8,12 +8,15 @@ import (
 	"os"
 )
 
-var index = template.Must(template.ParseFiles(
-	"templ/_base.html",
-	"templ/index.html",
-))
-
 func CreatePg(htmlfile string, webcontents domains.WebContents) {
+
+//	pwd := os.Get("templ/_base.html")	
+//	log.Println("pwd",pwd)
+
+	var index = template.Must(template.ParseFiles(
+		"templ/_base.html",
+		"templ/index.html",
+	))
 
 	log.Println("createpage:")
 	webpage := bytes.NewBuffer(nil)
