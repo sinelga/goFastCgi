@@ -36,7 +36,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 func main() {
 
 	log.Println("Start")
-	listener, err := net.Listen("tcp", "127.0.0.1:9000")
+	listener, err := net.Listen("tcp", "127.0.0.1:8000")
 	if err != nil {
 		log.Fatal(err)
 	}
