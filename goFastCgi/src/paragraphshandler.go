@@ -78,7 +78,7 @@ func main() {
 		
 	} else {
 
-		createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, 50)
+		createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, 500)
 
 	}
 
