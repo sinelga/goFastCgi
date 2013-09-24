@@ -35,7 +35,11 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	listener, _ := net.Listen("tcp", "127.0.0.1:9000")
+	log.Println("Start")
+	listener, err := net.Listen("tcp", "127.0.0.1:9000")
+	if err != nil {
+		log.Fatal(err)
+	}
 	srv := new(FastCGIServer)
 	fcgi.Serve(listener, srv)
 }
