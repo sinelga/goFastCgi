@@ -1,29 +1,28 @@
 package main
 
 import (
-	"log"
-	"database/sql"
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"createparagraphs"
+	"database/sql"
+	"log"
 )
 
 var keywordsarr []string
 var phrasesarr []string
 var hostsarr []string
 
-
 func main() {
-	
-	locale :="fi_FI"
-	themes :="finance"
-	
+
+	locale := "fi_FI"
+	themes := "finance"
+
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	sqlstr := "select keyword from keywords where locale='"+locale +"' and themes='"+themes+"'"
-	
+	sqlstr := "select keyword from keywords where locale='" + locale + "' and themes='" + themes + "'"
+
 	rows, err := db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
@@ -37,10 +36,10 @@ func main() {
 
 	}
 	rows.Close()
-	log.Println("keywords",len(keywordsarr))
-	
-	sqlstr = "select phrase from phrases where locale='"+locale +"' and themes='"+themes+"'"
-	
+	log.Println("keywords", len(keywordsarr))
+
+	sqlstr = "select phrase from phrases where locale='" + locale + "' and themes='" + themes + "'"
+
 	rows, err = db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
@@ -54,11 +53,10 @@ func main() {
 
 	}
 	rows.Close()
-	log.Println("Phrases",len(phrasesarr))
-	
-	
-		sqlstr = "select host from hosts where locale='"+locale +"' and themes='"+themes+"'"
-	
+	log.Println("Phrases", len(phrasesarr))
+
+	sqlstr = "select host from hosts where locale='" + locale + "' and themes='" + themes + "'"
+
 	rows, err = db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
@@ -72,10 +70,16 @@ func main() {
 
 	}
 	rows.Close()
-	log.Println("hosts",len(hostsarr))
-	
-	
-	
-	createparagraphs.CreatePr(db,locale,themes,keywordsarr,phrasesarr,hostsarr,50) 
+	log.Println("hosts", len(hostsarr))
+
+	if db.Close(); err != nil {
+
+		log.Fatal(err)
+		
+	} else {
+
+		createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, 50)
+
+	}
 
 }

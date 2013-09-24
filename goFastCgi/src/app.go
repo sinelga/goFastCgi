@@ -115,5 +115,6 @@ func startones() {
 	}
 	rows.Close()
 	log.Println(len(phrasesarr_fi_FI_finance))
+	db.Close()
 
 }

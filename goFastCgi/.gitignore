@@ -1,4 +1,5 @@
+*.a
 /www
-/singo.db
 /singo.db.last
 /backup.sql
+/gofast.db

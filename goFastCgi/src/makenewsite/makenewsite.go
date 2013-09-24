@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-func Makenew(locale string, themes string, host string, pathinfo string,title string, paragraphid int64) {
+func Makenew(locale string, themes string, host string, pathinfo string, title string, paragraphid int64) {
 
 	now := time.Now().Unix()
 
-	db, err := sql.Open("sqlite3", "singo.db")
+	db, err := sql.Open("sqlite3", "gofast.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func Makenew(locale string, themes string, host string, pathinfo string,title st
 			log.Fatal(err)
 		}
 		defer stmt.Close()
-		if rs, err = stmt.Exec(siteid,paragraphid); err != nil {
+		if rs, err = stmt.Exec(siteid, paragraphid); err != nil {
 
 			log.Fatal(err)
 
@@ -54,4 +54,9 @@ func Makenew(locale string, themes string, host string, pathinfo string,title st
 
 	}
 	tx.Commit()
+
+	if db.Close(); err != nil {
+
+		log.Fatal(err)
+	}
 }

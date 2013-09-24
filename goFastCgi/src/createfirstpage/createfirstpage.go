@@ -32,12 +32,14 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	log.Println(path)
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
-		panic(err)
+//		panic(err)
+		log.Fatal(err)
 	}
 
 	file, err := os.Create(htmlfile)
 	if err != nil {
-		panic(err)
+//		panic(err)
+		log.Fatal(err)
 	}
 
 	ext := string(".html")

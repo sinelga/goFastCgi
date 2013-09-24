@@ -2,22 +2,26 @@ package createparagraphs
 
 import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
+	"comutils"
 	"database/sql"
 	"insertsentences"
-	"comutils"
-	"prtitlegen"
-	"p_create_locallink"
 	"io/ioutil"
 	"log"
 	ml "marklib"
 	"math/rand"
+	"p_create_locallink"
+	"prtitlegen"
 	"time"
 )
 
-//var keywordsarr_fi_FI_finance []string
 var markfile string
 
-func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phrases []string, hosts []string,quant int) {
+func CreatePr(locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
+
+	db, err := sql.Open("sqlite3", "gofast.db")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println("start CreatePr")
 	prefixLen := 1
@@ -32,8 +36,6 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-
-	var rs sql.Result
 
 	if locale == "fi_FI" && themes == "finance" {
 
@@ -51,15 +53,17 @@ func CreatePr(db *sql.DB, locale string, themes string, keywords []string, phras
 	c.Write(fData)
 	// end For start Mark
 	
+	var rs sql.Result
+
 	for i := 0; i < quant; i++ {
-	
+
 		prtitle := prtitlegen.Generate(keywords)
-		prphrase := comutils.UpcaseInitial(phrases[rand.Intn(len(phrases))])+"."
+		prphrase := comutils.UpcaseInitial(phrases[rand.Intn(len(phrases))]) + "."
 		host := hosts[rand.Intn(len(hosts))]
 		locallink := p_create_locallink.CreateLink(keywords)
-	
+
 		now := time.Now().Unix()
-		if rs, err = stmt.Exec(now,locale,themes,prtitle,prphrase,host,locallink); err != nil {
+		if rs, err = stmt.Exec(now, locale, themes, prtitle, prphrase, host, locallink); err != nil {
 
 			log.Fatal(err)
 

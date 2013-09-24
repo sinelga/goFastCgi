@@ -12,7 +12,7 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	var paragraphid int64
 	var sentencesarr []string
 
-	db, err := sql.Open("sqlite3", "singo.db")
+	db, err := sql.Open("sqlite3", "gofast.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	}
 	rows.Close()
 
-	log.Println(paragraphid)
+//	log.Println(paragraphid)
 
 	sqlstr = "select Sentence from sentences where Prid=" + strconv.FormatInt(paragraphid, 10)
 	log.Println(sqlstr)
@@ -48,6 +48,7 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 
 	}
 
+	db.Close()
 	return paragraphid, sentencesarr
 
 }
