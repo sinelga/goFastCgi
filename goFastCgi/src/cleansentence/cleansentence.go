@@ -16,12 +16,12 @@ func Clean(sentence string) string {
 
 	if restring[:1] == " " {
 
-		restring = strings.Replace(restring, " ", "", 1)
+		restring = strings.Replace(restring," ", "", 1)
 	}
 
 	if restring[:1] == " " {
 
-		restring = strings.Replace(restring, " ", "", 1)
+		restring = strings.Replace(restring," ", "", 1)
 	}
 
 	return restring

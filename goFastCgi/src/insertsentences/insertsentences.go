@@ -6,13 +6,13 @@ import (
 	"database/sql"
 	"log"
 	"markgen"
-	"strings"
 	ml "marklib"
+	"strings"
 )
 
-func Insert(db *sql.DB, tx *sql.Tx,c *ml.Chain, locale string, themes string, paragraphid int64) {
+func Insert(db *sql.DB, tx *sql.Tx, c *ml.Chain, locale string, themes string, paragraphid int64) {
 
-	sentences := markgen.Generate(c,locale, themes)
+	sentences := markgen.Generate(c, locale, themes)
 
 	stmt, err := tx.Prepare("insert into sentences(Prid,Sentence) values(?,?)")
 	if err != nil {
@@ -30,14 +30,16 @@ func Insert(db *sql.DB, tx *sql.Tx,c *ml.Chain, locale string, themes string, pa
 
 		} else {
 
-			clsentence := cleansentence.Clean(sentences[i])
+			if len(sentences[i]) > 20 {
+			
+				clsentence := cleansentence.Clean(sentences[i])
 
-			if _, err = stmt.Exec(paragraphid, clsentence+"."); err != nil {
+				if _, err = stmt.Exec(paragraphid, clsentence+"."); err != nil {
 
-				log.Fatal(err)
+					log.Fatal(err)
+				}
 			}
 		}
 	}
-
 
 }

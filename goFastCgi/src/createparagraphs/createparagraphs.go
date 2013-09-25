@@ -64,13 +64,12 @@ func CreatePr(locale string, themes string, keywords []string, phrases []string,
 
 		now := time.Now().Unix()
 		if rs, err = stmt.Exec(now, locale, themes, prtitle, prphrase, host, locallink); err != nil {
-
 			log.Fatal(err)
 
 		} else {
 
 			paragraphid, _ := rs.LastInsertId()
-			log.Println(paragraphid)
+//			log.Println(paragraphid)
 			insertsentences.Insert(db, tx, c, locale, themes, paragraphid)
 
 		}
