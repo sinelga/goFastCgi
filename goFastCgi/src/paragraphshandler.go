@@ -8,6 +8,7 @@ import (
 	"log"
 	"log/syslog"
 	"os"
+	"strconv"
 )
 
 var localeFlag = flag.String("locale", "", "must be fi_FI/en_US/it_IT")
@@ -32,10 +33,10 @@ func main() {
 	var locale string
 	var themes string
 	var quant int
-	
+
 	if *quantFlag > 0 {
-		
-		quant  = *quantFlag
+
+		quant = *quantFlag
 
 		if *localeFlag == "fi_FI" && *themesFlag == "finance" {
 
@@ -60,7 +61,7 @@ func main() {
 		}
 
 		sqlstr := "select count() as count from paragraphs where locale='" + locale + "' and themes='" + themes + "' and Siteid is null"
-	
+
 		rows, err := dbst.Query(sqlstr)
 		if err != nil {
 			log.Fatal(err)
@@ -75,73 +76,88 @@ func main() {
 		rows.Close()
 		log.Println("count", count)
 		dbst.Close()
+
+		golog.Info("Free parargraphs-> " + locale + " " + themes + " " + count)
+
+		countint, err := strconv.Atoi(count)
+		if err != nil {
+			os.Exit(2)
+		}
+
+		if countint < quant {
 		
-		golog.Info("Free parargraphs---> " + locale+" "+themes+" "+count)
-		
-		db, err := sql.Open("sqlite3", "singo.db")
-		if err != nil {
-			log.Fatal(err)
-		}
+			golog.Info("Time make job add "+strconv.Itoa(quant)+" "+locale + " " + themes)
 
-		sqlstr = "select keyword from keywords where locale='" + locale + "' and themes='" + themes + "'"
+			db, err := sql.Open("sqlite3", "singo.db")
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		rows, err = db.Query(sqlstr)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer rows.Close()
+			sqlstr = "select keyword from keywords where locale='" + locale + "' and themes='" + themes + "'"
 
-		for rows.Next() {
-			var keyword string
-			rows.Scan(&keyword)
-			keywordsarr = append(keywordsarr, keyword)
+			rows, err = db.Query(sqlstr)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer rows.Close()
 
-		}
-		rows.Close()
-		log.Println("keywords", len(keywordsarr))
+			for rows.Next() {
+				var keyword string
+				rows.Scan(&keyword)
+				keywordsarr = append(keywordsarr, keyword)
 
-		sqlstr = "select phrase from phrases where locale='" + locale + "' and themes='" + themes + "'"
+			}
+			rows.Close()
+			log.Println("keywords", len(keywordsarr))
 
-		rows, err = db.Query(sqlstr)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer rows.Close()
+			sqlstr = "select phrase from phrases where locale='" + locale + "' and themes='" + themes + "'"
 
-		for rows.Next() {
-			var phrase string
-			rows.Scan(&phrase)
-			phrasesarr = append(phrasesarr, phrase)
+			rows, err = db.Query(sqlstr)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer rows.Close()
 
-		}
-		rows.Close()
-		log.Println("Phrases", len(phrasesarr))
+			for rows.Next() {
+				var phrase string
+				rows.Scan(&phrase)
+				phrasesarr = append(phrasesarr, phrase)
 
-		sqlstr = "select host from hosts where locale='" + locale + "' and themes='" + themes + "'"
+			}
+			rows.Close()
+			log.Println("Phrases", len(phrasesarr))
 
-		rows, err = db.Query(sqlstr)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer rows.Close()
+			sqlstr = "select host from hosts where locale='" + locale + "' and themes='" + themes + "'"
 
-		for rows.Next() {
-			var host string
-			rows.Scan(&host)
-			hostsarr = append(hostsarr, host)
+			rows, err = db.Query(sqlstr)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer rows.Close()
 
-		}
-		rows.Close()
-		log.Println("hosts", len(hostsarr))
+			for rows.Next() {
+				var host string
+				rows.Scan(&host)
+				hostsarr = append(hostsarr, host)
 
-		if db.Close(); err != nil {
+			}
+			rows.Close()
+			log.Println("hosts", len(hostsarr))
 
-			log.Fatal(err)
+			if db.Close(); err != nil {
 
+				log.Fatal(err)
+
+			} else {
+
+				createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
+
+			}
 		} else {
-
-			createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
-
-		}
+			
+			golog.Info("Not job for "+locale + " " + themes)
+			
+		
+		} //make job
 	} //end quant
 }
