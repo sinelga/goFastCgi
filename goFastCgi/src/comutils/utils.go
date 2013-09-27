@@ -5,14 +5,23 @@ import (
 	"encoding/gob"
 	"math/rand"
 	"unicode"
-
 )
 
 func UpcaseInitial(str string) string {
 
-	for i, v := range str {
-		return string(unicode.ToUpper(v)) + str[i+1:]
+	//	for i, v := range str {
+	////		return string(unicode.ToUpper(v)) + str[i+1:]
+	//		return
+	//	}
+
+	runes := []rune(str)
+
+	for i, v := range runes {
+	
+		return string(unicode.ToUpper(v)) + string(runes[i+1:])
+
 	}
+
 	return ""
 
 }

@@ -25,7 +25,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	var paragraphid int64
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
-	log.Println(htmlfile)
+//	log.Println(htmlfile)
 
 	path := filepath.Dir(htmlfile)
 	log.Println(path)
@@ -65,7 +65,8 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	rand.Seed(time.Now().UTC().UnixNano())
 	permphr := rand.Perm(len(phrases))
 
-	for i, v := range permphr {
+	for i, v := range permphr {		
+		
 		destphr[v] = comutils.UpcaseInitial(phrases[i])
 	}
 
@@ -78,7 +79,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		Keywords:   destkey,
 		UpKeywords: upcasesomekeywords,
 		Title:      title,
-		Phrases:    destphr,
+		Phrases:    destphr[:5],
 	}
 
 	webpage := bytes.NewBuffer(nil)

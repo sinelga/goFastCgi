@@ -4,16 +4,16 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"createfirstpage"
 	"database/sql"
-//	"encoding/json"
+	//	"encoding/json"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
 	"sync"
-//	"strings"
-	"htmlfileexist"
+	//	"strings"
 	"clean_pathinfo"
+	"htmlfileexist"
 )
 
 var startOnce sync.Once
@@ -46,7 +46,6 @@ func main() {
 	fcgi.Serve(listener, srv)
 }
 
-
 func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
 	log.Println(locale)
@@ -57,17 +56,21 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	startOnce.Do(func() {
 		startones()
 	})
-	pathinfostr :=clean_pathinfo.CleanPath(pathinfo)
-			
+	pathinfostr := clean_pathinfo.CleanPath(pathinfo)
+
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-	log.Println(htmlfile )
+	log.Println(htmlfile)
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 
 			log.Println("file does not exist")
+			if locale == "fi_FI" && themes == "finance" {
+				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+			} else if locale == "fi_FI" && themes == "porno" {
+				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
 
-			createfirstpage.CreatePage(locale, themes, host, pathinfostr,keywordsarr_fi_FI_finance,phrasesarr_fi_FI_finance)
+			}
 			http.ServeFile(resp, req, htmlfile)
 
 		} else {
@@ -77,10 +80,10 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		}
 
 	} else {
-		log.Println("fileexist",htmlfile,"host",host,"pathinfostr",pathinfostr)
+		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
 		http.ServeFile(resp, req, htmlfile)
-		go htmlfileexist.StartCheck(htmlfile,host,pathinfostr)
-		
+		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
+
 	}
 }
 
@@ -92,35 +95,53 @@ func startones() {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("select keyword from keywords where locale='fi_FI' and themes='finance'")
+	rows, err := db.Query("select Locale,Themes,Keyword from keywords")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
+		var locale string
+		var themes string
 		var keyword string
-		rows.Scan(&keyword)
-		keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+
+		rows.Scan(&locale, &themes, &keyword)
+		if locale == "fi_FI" && themes == "finance" {
+			keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+		} else if locale == "fi_FI" && themes == "porno" {
+			keywordsarr_fi_FI_porno = append(keywordsarr_fi_FI_porno, keyword)
+
+		}
 
 	}
 	rows.Close()
-	log.Println(len(keywordsarr_fi_FI_finance))
+	log.Println("keywordsarr_fi_FI_finance", len(keywordsarr_fi_FI_finance))
+	log.Println("keywordsarr_fi_FI_porno", len(keywordsarr_fi_FI_porno))
 
-	rows, err = db.Query("select phrase from phrases where locale='fi_FI' and themes='finance'")
+	rows, err = db.Query("select Locale,Themes,Phrase from phrases")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
+		var locale string
+		var themes string
 		var phrase string
-		rows.Scan(&phrase)
-		phrasesarr_fi_FI_finance = append(phrasesarr_fi_FI_finance, phrase)
+		rows.Scan(&locale, &themes, &phrase)
+
+		if locale == "fi_FI" && themes == "finance" {
+			phrasesarr_fi_FI_finance = append(phrasesarr_fi_FI_finance, phrase)
+		} else if locale == "fi_FI" && themes == "porno" {
+
+			phrasesarr_fi_FI_porno = append(phrasesarr_fi_FI_porno, phrase)
+		}
 
 	}
 	rows.Close()
-	log.Println(len(phrasesarr_fi_FI_finance))
+	log.Println("phrasesarr_fi_FI_finance", len(phrasesarr_fi_FI_finance))
+	log.Println("phrasesarr_fi_FI_porno", len(phrasesarr_fi_FI_porno))
 	db.Close()
 
 }
