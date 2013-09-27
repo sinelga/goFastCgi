@@ -40,6 +40,11 @@ func CreatePr(locale string, themes string, keywords []string, phrases []string,
 	if locale == "fi_FI" && themes == "finance" {
 
 		markfile = "markresources/fi_FI_finance.txt"
+		
+	} else if locale == "fi_FI" && themes == "porno" {
+	
+		markfile = "markresources/fi_FI_porno.txt"
+	
 	}
 
 	//For start Mark

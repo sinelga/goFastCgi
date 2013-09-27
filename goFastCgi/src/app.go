@@ -19,6 +19,8 @@ import (
 var startOnce sync.Once
 var keywordsarr_fi_FI_finance []string
 var phrasesarr_fi_FI_finance []string
+var keywordsarr_fi_FI_porno []string
+var phrasesarr_fi_FI_porno []string
 
 type FastCGIServer struct{}
 
