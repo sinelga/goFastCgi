@@ -29,8 +29,6 @@ func GetTitle(locale string, themes string, site string, pathinfo string) string
 			title = rec[0]
 		}
 
-		//		fmt.Println("Title-> " + title)
-
 	} else {
 		strReader := strings.NewReader(pathinfo)
 		reader := csv.NewReader(strReader)
