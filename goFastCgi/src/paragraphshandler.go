@@ -47,6 +47,13 @@ func main() {
 
 			locale = "fi_FI"
 			themes = "porno"
+			
+			
+		} else if *localeFlag == "it_IT" && *themesFlag == "finance" {
+
+			locale = "it_IT"
+			themes = "finance"	
+			
 
 		} else {
 

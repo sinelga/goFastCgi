@@ -25,7 +25,6 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	var paragraphid int64
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
-//	log.Println(htmlfile)
 
 	path := filepath.Dir(htmlfile)
 	log.Println(path)
