@@ -30,10 +30,8 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	}
 	rows.Close()
 
-//	log.Println(paragraphid)
-
 	sqlstr = "select Sentence from sentences where Prid=" + strconv.FormatInt(paragraphid, 10)
-	log.Println(sqlstr)
+//	log.Println(sqlstr)
 
 	rows, err = db.Query(sqlstr)
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"log"
+	"time"
 )
 
 func Checkdb(db *sql.DB, host string, pathinfo string) (int64, string, string, string) {
@@ -13,16 +14,7 @@ func Checkdb(db *sql.DB, host string, pathinfo string) (int64, string, string, s
 	var rowid int64
 	var hits int
 
-	//	tx, err := db.Begin()
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//
-	//	stmt, err := tx.Prepare("update sites set Hits(Created,Locale,Themes,Ptitle,Pphrase,Host,Locallink) values(?,?,?,?,?,?,?)")
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//	defer stmt.Close()
+	now := time.Now().Unix()
 
 	sqlstr := "select rowid,Hits,Locale,Themes,Title from sites where Site='" + host + "' and Pathinfo='" + pathinfo + "'"
 
@@ -38,8 +30,6 @@ func Checkdb(db *sql.DB, host string, pathinfo string) (int64, string, string, s
 	}
 	rows.Close()
 
-	//	log.Println("Checkdb:Start", locale, themes)
-
 	tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +37,7 @@ func Checkdb(db *sql.DB, host string, pathinfo string) (int64, string, string, s
 
 	newhits := hits + 1
 
-	sqlstr = "update sites set Hits = ? where rowid = ?"
+	sqlstr = "update sites set Hits = ?,Updated=? where rowid = ?"
 	log.Println(sqlstr)
 
 	stmt, err := tx.Prepare(sqlstr)
@@ -55,7 +45,7 @@ func Checkdb(db *sql.DB, host string, pathinfo string) (int64, string, string, s
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-	if _, err = stmt.Exec(newhits, rowid); err != nil {
+	if _, err = stmt.Exec(newhits, now,rowid); err != nil {
 		log.Fatal(err)
 	}
 
