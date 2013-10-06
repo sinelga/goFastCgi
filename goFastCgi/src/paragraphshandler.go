@@ -157,14 +157,13 @@ func main() {
 
 			} else {
 
-				createparagraphs.CreatePr(locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
+				createparagraphs.CreatePr(*golog,locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
 
 			}
 		} else {
 			
 			golog.Info("Not job for "+locale + " " + themes)
-			
-		
+					
 		} //make job
 	} //end quant
 }

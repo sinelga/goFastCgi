@@ -7,16 +7,18 @@ import (
 	"insertsentences"
 	"io/ioutil"
 	"log"
+	"log/syslog"
 	ml "marklib"
 	"math/rand"
 	"p_create_locallink"
 	"prtitlegen"
+	"selectmarkfile"
 	"time"
 )
 
 var markfile string
 
-func CreatePr(locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
+func CreatePr(golog syslog.Writer,locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
 
 	db, err := sql.Open("sqlite3", "gofast.db")
 	if err != nil {
@@ -37,18 +39,23 @@ func CreatePr(locale string, themes string, keywords []string, phrases []string,
 	}
 	defer stmt.Close()
 
-	if locale == "fi_FI" && themes == "finance" {
-
-		markfile = "markresources/fi_FI_finance.txt"
-		
-	} else if locale == "fi_FI" && themes == "porno" {
+	markfile = selectmarkfile.SelectFile(golog,locale,themes)
 	
-		markfile = "markresources/fi_FI_porno.txt"
+	log.Println("markfile -> ",markfile)
+	golog.Info("markfile -> "+markfile)
 	
-	} else if locale == "it_IT" && themes == "finance" {
-	
-		markfile = "markresources/it_IT_finance.txt"	
-	}
+//	if locale == "fi_FI" && themes == "finance" {
+//		
+//		markfile = "markresources/fi_FI_finance.txt"
+//		
+//	} else if locale == "fi_FI" && themes == "porno" {
+//	
+//		markfile = "markresources/fi_FI_porno.txt"
+//	
+//	} else if locale == "it_IT" && themes == "finance" {
+//	
+//		markfile = "markresources/it_IT_finance.txt"	
+//	}
 
 	//For start Mark
 	rand.Seed(time.Now().UnixNano())
