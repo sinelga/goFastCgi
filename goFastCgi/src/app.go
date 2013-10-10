@@ -23,6 +23,8 @@ var keywordsarr_fi_FI_porno []string
 var phrasesarr_fi_FI_porno []string
 var keywordsarr_it_IT_finance []string
 var phrasesarr_it_IT_finance []string
+var keywordsarr_fi_FI_fortune []string
+var phrasesarr_fi_FI_fortune []string
 
 type FastCGIServer struct{}
 
@@ -74,7 +76,11 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 			} else if locale == "it_IT" && themes == "finance" {
 				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+			}  else if locale == "fi_FI" && themes == "fortune" {
+				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
 			}
+			
+			
 			http.ServeFile(resp, req, htmlfile)
 
 		} else {
@@ -119,13 +125,16 @@ func startones() {
 		} else if locale == "it_IT" && themes == "finance" {
 			keywordsarr_it_IT_finance = append(keywordsarr_it_IT_finance, keyword)
 
-		}
+		} else if locale == "fi_FI" && themes == "fortune" {
+			keywordsarr_fi_FI_fortune = append(keywordsarr_fi_FI_fortune, keyword)
+		} 
 
 	}
 	rows.Close()
 	log.Println("keywordsarr_fi_FI_finance", len(keywordsarr_fi_FI_finance))
 	log.Println("keywordsarr_fi_FI_porno", len(keywordsarr_fi_FI_porno))
 	log.Println("keywordsarr_it_IT_finance", len(keywordsarr_it_IT_finance))
+	log.Println("keywordsarr_fi_FI_fortune", len(keywordsarr_fi_FI_fortune))
 
 	rows, err = db.Query("select Locale,Themes,Phrase from phrases")
 	if err != nil {
@@ -145,6 +154,8 @@ func startones() {
 			phrasesarr_fi_FI_porno = append(phrasesarr_fi_FI_porno, phrase)
 		} else if locale == "it_IT" && themes == "finance" {
 			phrasesarr_it_IT_finance = append(phrasesarr_it_IT_finance, phrase)
+		} else if locale == "fi_FI" && themes == "fortune" {
+			phrasesarr_fi_FI_fortune = append(phrasesarr_fi_FI_fortune, phrase)
 		}
 
 	}
@@ -152,6 +163,7 @@ func startones() {
 	log.Println("phrasesarr_fi_FI_finance", len(phrasesarr_fi_FI_finance))
 	log.Println("phrasesarr_fi_FI_porno", len(phrasesarr_fi_FI_porno))
 	log.Println("phrasesarr_it_IT_finance", len(phrasesarr_it_IT_finance))
+	log.Println("phrasesarr_fi_FI_fortune", len(phrasesarr_fi_FI_fortune))
 	db.Close()
 
 }

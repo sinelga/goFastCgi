@@ -44,19 +44,6 @@ func CreatePr(golog syslog.Writer,locale string, themes string, keywords []strin
 	log.Println("markfile -> ",markfile)
 	golog.Info("markfile -> "+markfile)
 	
-//	if locale == "fi_FI" && themes == "finance" {
-//		
-//		markfile = "markresources/fi_FI_finance.txt"
-//		
-//	} else if locale == "fi_FI" && themes == "porno" {
-//	
-//		markfile = "markresources/fi_FI_porno.txt"
-//	
-//	} else if locale == "it_IT" && themes == "finance" {
-//	
-//		markfile = "markresources/it_IT_finance.txt"	
-//	}
-
 	//For start Mark
 	rand.Seed(time.Now().UnixNano())
 	c := ml.NewChain(prefixLen)

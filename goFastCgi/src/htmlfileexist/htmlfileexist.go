@@ -21,6 +21,7 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 	var locale string
 	var themes string
 	var title string
+	var deltamin int
 	var paragraphsarr []domains.Paragraph
 
 	db, err := sql.Open("sqlite3", "gofast.db")
@@ -28,7 +29,7 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 		log.Fatal(err)
 	}
 
-	rowid, locale, themes, title = checkdbexist.Checkdb(db, host, pathinfo)
+	rowid, locale, themes, title, deltamin = checkdbexist.Checkdb(db, host, pathinfo)
 
 	webcontents.Rowid = rowid
 	webcontents.Locale = locale
@@ -37,25 +38,30 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 	webcontents.Site = host
 	webcontents.PathInfo = pathinfo
 
-	paragraphsarr = getalldbparagraphs.GetAllPr(db, rowid, host)
+	if deltamin > 5 {
 
-	for i, paragraph := range paragraphsarr {
+		paragraphsarr = getalldbparagraphs.GetAllPr(db, rowid, host)
 
-		//		log.Println("htmlfileexist:",paragraph.Rowid)
-		paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
-	}
+		for i, paragraph := range paragraphsarr {
 
-	//    log.Println(paragraphsarr[0].Sentences[0])
-	addfreeparagraph.AddPr(db, rowid, locale, themes)
+			paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
+		}
 
-	if db.Close(); err != nil {
+		addfreeparagraph.AddPr(db, rowid, locale, themes)
 
-		log.Fatal(err)
+		if db.Close(); err != nil {
+
+			log.Fatal(err)
+		} else {
+
+			webcontents.Paragraphs = paragraphsarr
+			createpage.CreatePg(htmlfile, webcontents)
+
+		}
 	} else {
-
-		webcontents.Paragraphs = paragraphsarr
-		createpage.CreatePg(htmlfile, webcontents)
-
+		
+		log.Println("Dont Create new PAGE!!")
+		
 	}
 
 }

@@ -12,7 +12,7 @@ import (
 )
 
 var localeFlag = flag.String("locale", "", "must be fi_FI/en_US/it_IT")
-var themesFlag = flag.String("themes", "", "must be porno/finance...")
+var themesFlag = flag.String("themes", "", "must be porno/finance/fortune...")
 var quantFlag = flag.Int("quant", 0, "quant must be > 0")
 
 var keywordsarr []string
@@ -47,13 +47,16 @@ func main() {
 
 			locale = "fi_FI"
 			themes = "porno"
-			
-			
+						
 		} else if *localeFlag == "it_IT" && *themesFlag == "finance" {
 
 			locale = "it_IT"
 			themes = "finance"	
 			
+		} else if *localeFlag == "fi_FI" && *themesFlag == "fortune" {
+
+			locale = "fi_FI"
+			themes = "fortune"			
 
 		} else {
 
@@ -81,7 +84,7 @@ func main() {
 			rows.Scan(&count)
 		}
 		rows.Close()
-		log.Println("count", count)
+		log.Println("count free paragraphs", count)
 		dbst.Close()
 
 		golog.Info("Free parargraphs-> " + locale + " " + themes + " " + count)
