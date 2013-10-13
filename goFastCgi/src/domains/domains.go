@@ -6,13 +6,21 @@ import (
 //	"appengine/datastore"
 )
 
-type Tsentences struct {
-	Sentences []string
+type Site struct {
+	Locale   string
+	Themes   string
+	Domain   string
+	Pathinfo string
 }
 
-type MarkovTask struct {
-	Sentences []string
-}
+
+//type Tsentences struct {
+//	Sentences []string
+//}
+
+//type MarkovTask struct {
+//	Sentences []string
+//}
 
 type Keyword struct {
 	Locale  string
@@ -68,14 +76,5 @@ type WebContents struct {
 	Hits     int
 	AllHits  int
 	Paragraphs []Paragraph
-	
-//	//	Mtext    []string
-//	Mtext   []byte
-//	WebPage []byte
-//	//	KeyWords []string
-////	KeyWords []byte
-//	Title    string
-////	Phrases  []byte
-//	Somephrases []string
-//	Somekeywords []string
+
 }

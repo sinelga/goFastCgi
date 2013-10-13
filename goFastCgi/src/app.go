@@ -13,7 +13,8 @@ import (
 	"sync"
 	//	"strings"
 	"clean_pathinfo"
-	"htmlfileexist"
+//	"htmlfileexist"
+	"pushinqueue"
 )
 
 var startOnce sync.Once
@@ -41,7 +42,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	log.Println("Start")
+	log.Println("Server Start")
 	listener, err := net.Listen("tcp", "127.0.0.1:8000")
 	if err != nil {
 		log.Fatal(err)
@@ -64,6 +65,8 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
 	log.Println(htmlfile)
+		
+	
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
@@ -92,7 +95,8 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	} else {
 		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
 		http.ServeFile(resp, req, htmlfile)
-		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
+//		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
+		go pushinqueue.PushInQueue("redis",locale,themes,host,pathinfostr)
 
 	}
 }

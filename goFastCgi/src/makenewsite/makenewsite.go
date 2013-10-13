@@ -47,10 +47,7 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 
 			log.Fatal(err)
 
-		} else {
-
-			log.Println("Update ok")
-		}
+		} 
 
 	}
 	tx.Commit()
