@@ -71,6 +71,7 @@ func Checkdb(db *sql.DB, host string, pathinfo string) domains.WebContents {
 	}
 	defer stmt.Close()
 	if _, err = stmt.Exec(newhits,now,rowid); err != nil {
+		log.Println("update sites set Hits = ?,Updated=? where rowid = ?")
 		log.Fatal(err)
 	}
 

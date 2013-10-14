@@ -11,7 +11,7 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 
 	now := time.Now().Unix()
 
-	db, err := sql.Open("sqlite3", "gofast.db")
+	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,6 +23,7 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 
 	stmt, err := tx.Prepare("insert into sites(Created,Updated,AllHits,Hits,Locale,Themes,Site,Pathinfo,Title) values(?,?,?,?,?,?,?,?,?)")
 	if err != nil {
+		log.Println("insert into sites(Created,Updated,AllHits,Hits,Locale,Themes,Site,Pathinfo,Title) values(?,?,?,?,?,?,?,?,?)")
 		log.Fatal(err)
 	}
 	defer stmt.Close()
@@ -44,7 +45,8 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 		}
 		defer stmt.Close()
 		if rs, err = stmt.Exec(siteid, paragraphid); err != nil {
-
+			
+			log.Println("update paragraphs set Siteid=? where rowid=?")
 			log.Fatal(err)
 
 		} 

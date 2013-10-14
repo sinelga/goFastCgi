@@ -50,6 +50,7 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	rows.Close()
 	
 	db.Close()
+	
 	return paragraphid, sentencesarr
 
 }
