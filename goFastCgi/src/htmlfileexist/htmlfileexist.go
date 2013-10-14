@@ -26,7 +26,7 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 
 	webcontents := checkdbexist.Checkdb(db, host, pathinfo)
 	
-	log.Println("StartCheck:webcontents.Hits", webcontents.Hits)
+	log.Println("StartCheck:webcontents.Hits", webcontents.Hits,"webcontents.Rowid",webcontents.Rowid)
 
 	if webcontents.Hits < 10 {
 
