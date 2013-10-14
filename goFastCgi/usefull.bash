@@ -1,4 +1,8 @@
 
+redis llen pagetocreate
+
+
+
 select count() from paragraphs where Siteid is null;
 
 cp  singo.db  singo.db.last
