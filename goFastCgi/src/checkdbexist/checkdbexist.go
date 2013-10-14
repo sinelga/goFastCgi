@@ -51,9 +51,9 @@ func Checkdb(db *sql.DB, host string, pathinfo string) domains.WebContents {
 	}
 	
 	
-	lastHitwas := time.Unix(updated, 0)
-	
-	log.Println("Since last click ",int(time.Since(lastHitwas).Minutes()))
+//	lastHitwas := time.Unix(updated, 0)
+//	
+//	log.Println("Since last click ",int(time.Since(lastHitwas).Minutes()))
 //	deltamin = int(time.Since(lastHitwas).Minutes())
 
 	tx, err := db.Begin()

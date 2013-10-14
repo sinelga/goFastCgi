@@ -11,7 +11,7 @@ import (
 
 func GetAllPr(db *sql.DB, siteid int64,site string) []domains.Paragraph {
 
-	log.Println("GetAllPr:Start")
+//	log.Println("GetAllPr:Start")
 
 	var paragraphsarr []domains.Paragraph
 

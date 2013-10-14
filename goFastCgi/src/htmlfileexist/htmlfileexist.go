@@ -24,7 +24,8 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 //	var deltamin int
 	var paragraphsarr []domains.Paragraph
 
-	db, err := sql.Open("sqlite3", "gofast.db")
+//	db, err := sql.Open("sqlite3", "gofast.db")
+	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
 	}

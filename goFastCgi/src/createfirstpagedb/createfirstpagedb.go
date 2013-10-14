@@ -12,7 +12,7 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	var paragraphid int64
 	var sentencesarr []string
 
-	db, err := sql.Open("sqlite3", "gofast.db")
+	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
 	}
