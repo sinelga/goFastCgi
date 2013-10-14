@@ -14,14 +14,6 @@ type Site struct {
 }
 
 
-//type Tsentences struct {
-//	Sentences []string
-//}
-
-//type MarkovTask struct {
-//	Sentences []string
-//}
-
 type Keyword struct {
 	Locale  string
 	Themes  string

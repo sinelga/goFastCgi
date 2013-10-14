@@ -16,12 +16,12 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 
 	log.Println("StartCheck", pathinfo)
 
-	var webcontents = domains.WebContents{}
-	var rowid int64
-	var locale string
-	var themes string
-	var title string
-	var deltamin int
+//	var webcontents = domains.WebContents{}
+//	var rowid int64
+//	var locale string
+//	var themes string
+//	var title string
+//	var deltamin int
 	var paragraphsarr []domains.Paragraph
 
 	db, err := sql.Open("sqlite3", "gofast.db")
@@ -29,25 +29,25 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 		log.Fatal(err)
 	}
 
-	rowid, locale, themes, title, deltamin = checkdbexist.Checkdb(db, host, pathinfo)
+	webcontents := checkdbexist.Checkdb(db, host, pathinfo)
 
-	webcontents.Rowid = rowid
-	webcontents.Locale = locale
-	webcontents.Themes = themes
-	webcontents.Title = title
-	webcontents.Site = host
-	webcontents.PathInfo = pathinfo
+//	webcontents.Rowid = rowid
+//	webcontents.Locale = locale
+//	webcontents.Themes = themes
+//	webcontents.Title = title
+//	webcontents.Site = host
+//	webcontents.PathInfo = pathinfo
 
-	if deltamin > 5 {
+	if webcontents.Hits < 10 {
 
-		paragraphsarr = getalldbparagraphs.GetAllPr(db, rowid, host)
+		paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
 
 		for i, paragraph := range paragraphsarr {
 
 			paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
 		}
 
-		addfreeparagraph.AddPr(db, rowid, locale, themes)
+		addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
 		if db.Close(); err != nil {
 

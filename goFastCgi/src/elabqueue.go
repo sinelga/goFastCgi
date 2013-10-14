@@ -22,7 +22,6 @@ func main() {
 
 		for i := 0; i < qpages; i++ {
 
-			log.Println("make")
 			msite, _ := redis.Bytes(c.Do("LPOP", "pagetocreate"))
 
 			var unmar domains.Site

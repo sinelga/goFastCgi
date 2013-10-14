@@ -10,9 +10,6 @@ import (
 
 func CreatePg(htmlfile string, webcontents domains.WebContents) {
 
-//	pwd := os.Get("templ/_base.html")	
-//	log.Println("pwd",pwd)
-
 	var index = template.Must(template.ParseFiles(
 		"templ/_base.html",
 		"templ/index.html",
