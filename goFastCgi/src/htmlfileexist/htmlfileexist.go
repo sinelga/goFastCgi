@@ -14,30 +14,17 @@ import (
 
 func StartCheck(htmlfile string, host string, pathinfo string) {
 
-	log.Println("StartCheck", pathinfo)
+	//	log.Println("StartCheck", pathinfo)
 
-//	var webcontents = domains.WebContents{}
-//	var rowid int64
-//	var locale string
-//	var themes string
-//	var title string
-//	var deltamin int
 	var paragraphsarr []domains.Paragraph
 
-//	db, err := sql.Open("sqlite3", "gofast.db")
+	//	db, err := sql.Open("sqlite3", "gofast.db")
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	webcontents := checkdbexist.Checkdb(db, host, pathinfo)
-
-//	webcontents.Rowid = rowid
-//	webcontents.Locale = locale
-//	webcontents.Themes = themes
-//	webcontents.Title = title
-//	webcontents.Site = host
-//	webcontents.PathInfo = pathinfo
 
 	if webcontents.Hits < 10 {
 
@@ -50,19 +37,24 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 
 		addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
-		if db.Close(); err != nil {
+		//		if db.Close(); err != nil {
+		//
+		//			log.Fatal(err)
+		//		} else {
 
-			log.Fatal(err)
-		} else {
+		webcontents.Paragraphs = paragraphsarr
+		createpage.CreatePg(htmlfile, webcontents)
 
-			webcontents.Paragraphs = paragraphsarr
-			createpage.CreatePg(htmlfile, webcontents)
-
-		}
+		//		}
 	} else {
-		
+
 		log.Println("Dont Create new PAGE!!")
-		
+
+	}
+
+	if db.Close(); err != nil {
+
+		log.Fatal(err)
 	}
 
 }

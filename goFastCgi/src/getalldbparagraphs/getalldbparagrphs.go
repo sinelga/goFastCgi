@@ -40,7 +40,7 @@ func GetAllPr(db *sql.DB, siteid int64,site string) []domains.Paragraph {
 		domain := domainarr[len(domainarr)-2]+"."+domainarr[len(domainarr)-1]
 		
 		locallink =phost+"."+domain+ plocallink
-		log.Println(locallink) 
+//		log.Println(locallink) 
 
 		paragraph := domains.Paragraph{
 

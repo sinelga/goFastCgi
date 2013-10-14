@@ -64,7 +64,6 @@ func Checkdb(db *sql.DB, host string, pathinfo string) domains.WebContents {
 	newhits := hits + 1
 
 	sqlstr = "update sites set Hits = ?,Updated=? where rowid = ?"
-//	log.Println(sqlstr)
 
 	stmt, err := tx.Prepare(sqlstr)
 	if err != nil {

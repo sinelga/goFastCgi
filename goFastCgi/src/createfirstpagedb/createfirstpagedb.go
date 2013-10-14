@@ -16,6 +16,8 @@ func FindFreeSentences(locale string, themes string) (int64, []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+	
 	sqlstr := "select rowid from paragraphs where locale='" + locale + "' and themes='" + themes + "' and Siteid is null limit 1"
 
 	rows, err := db.Query(sqlstr)
