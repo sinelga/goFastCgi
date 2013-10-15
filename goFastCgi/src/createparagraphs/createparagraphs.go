@@ -18,7 +18,7 @@ import (
 
 var markfile string
 
-func CreatePr(golog syslog.Writer,locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
+func CreatePr(golog syslog.Writer, locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
 
 	db, err := sql.Open("sqlite3", "gofast.db")
 	if err != nil {
@@ -39,11 +39,11 @@ func CreatePr(golog syslog.Writer,locale string, themes string, keywords []strin
 	}
 	defer stmt.Close()
 
-	markfile = selectmarkfile.SelectFile(golog,locale,themes)
-	
-	log.Println("markfile -> ",markfile)
-	golog.Info("markfile -> "+markfile)
-	
+	markfile = selectmarkfile.SelectFile(golog, locale, themes)
+
+	log.Println("markfile -> ", markfile)
+	golog.Info("markfile -> " + markfile)
+
 	//For start Mark
 	rand.Seed(time.Now().UnixNano())
 	c := ml.NewChain(prefixLen)
@@ -54,7 +54,7 @@ func CreatePr(golog syslog.Writer,locale string, themes string, keywords []strin
 	}
 	c.Write(fData)
 	// end For start Mark
-	
+
 	var rs sql.Result
 
 	for i := 0; i < quant; i++ {
@@ -71,7 +71,7 @@ func CreatePr(golog syslog.Writer,locale string, themes string, keywords []strin
 		} else {
 
 			paragraphid, _ := rs.LastInsertId()
-//			log.Println(paragraphid)
+			//			log.Println(paragraphid)
 			insertsentences.Insert(db, tx, c, locale, themes, paragraphid)
 
 		}

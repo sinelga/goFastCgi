@@ -37,7 +37,7 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 	} else {
 
 		siteid, _ := rs.LastInsertId()
-		log.Println(siteid)
+		//		log.Println(siteid)
 
 		stmt, err := tx.Prepare("update paragraphs set Siteid=? where rowid=?")
 		if err != nil {
@@ -45,13 +45,14 @@ func Makenew(locale string, themes string, host string, pathinfo string, title s
 		}
 		defer stmt.Close()
 		if rs, err = stmt.Exec(siteid, paragraphid); err != nil {
-			
+
 			log.Println("update paragraphs set Siteid=? where rowid=?")
 			log.Fatal(err)
 
-		} 
+		}
 
 	}
+	stmt.Close()
 	tx.Commit()
 
 	if db.Close(); err != nil {
