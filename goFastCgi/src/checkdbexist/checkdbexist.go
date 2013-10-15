@@ -49,7 +49,6 @@ func Checkdb(db *sql.DB, host string, pathinfo string) domains.WebContents {
 		Hits: hits,
 		AllHits: allhits,
 		
-	
 	}
 	
 	
