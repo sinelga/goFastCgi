@@ -53,10 +53,6 @@ func main() {
 
 func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
-//	log.Println(locale)
-//	log.Println(themes)
-//	log.Println(host)
-//	log.Println(pathinfo)
 
 	startOnce.Do(func() {
 		startones()

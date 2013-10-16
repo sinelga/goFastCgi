@@ -3,7 +3,7 @@ package createparagraphs
 import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"comutils"
-	"database/sql"
+//	"database/sql"
 	"insertsentences"
 	"io/ioutil"
 	"log"
@@ -14,30 +14,33 @@ import (
 	"prtitlegen"
 	"selectmarkfile"
 	"time"
+	"domains"
+	"queue/freeparagraphs"
 )
 
 var markfile string
+var paragraphs []domains.Paragraph
 
 func CreatePr(golog syslog.Writer, locale string, themes string, keywords []string, phrases []string, hosts []string, quant int) {
 
-	db, err := sql.Open("sqlite3", "gofast.db")
-	if err != nil {
-		log.Fatal(err)
-	}
+//	db, err := sql.Open("sqlite3", "gofast.db")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
 
 	log.Println("start CreatePr")
 	prefixLen := 1
 
-	tx, err := db.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase,Host,Locallink) values(?,?,?,?,?,?,?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
+//	tx, err := db.Begin()
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	stmt, err := tx.Prepare("insert into paragraphs(Created,Locale,Themes,Ptitle,Pphrase,Host,Locallink) values(?,?,?,?,?,?,?)")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	defer stmt.Close()
 
 	markfile = selectmarkfile.SelectFile(golog, locale, themes)
 
@@ -55,28 +58,37 @@ func CreatePr(golog syslog.Writer, locale string, themes string, keywords []stri
 	c.Write(fData)
 	// end For start Mark
 
-	var rs sql.Result
+//	var rs sql.Result
+	
 
 	for i := 0; i < quant; i++ {
-
+	
+		var clsentensesarr []string
+		
 		prtitle := prtitlegen.Generate(keywords)
 		prphrase := comutils.UpcaseInitial(phrases[rand.Intn(len(phrases))]) + "."
 		host := hosts[rand.Intn(len(hosts))]
 		locallink := p_create_locallink.CreateLink(keywords)
 
-		now := time.Now().Unix()
-		if rs, err = stmt.Exec(now, locale, themes, prtitle, prphrase, host, locallink); err != nil {
-			log.Fatal(err)
+			clsentensesarr = insertsentences.Insert(c, locale, themes)
 
-		} else {
-
-			paragraphid, _ := rs.LastInsertId()
-			//			log.Println(paragraphid)
-			insertsentences.Insert(db, tx, c, locale, themes, paragraphid)
-
+//		}
+		
+		paragraph := domains.Paragraph{
+		
+			Ptitle: prtitle,
+			Pphrase: prphrase,
+			Plocallink: locallink,
+			Phost: host,
+			Sentences: clsentensesarr,
+		
 		}
+		paragraphs = append(paragraphs,paragraph)
 
 	}
-	tx.Commit()
+//	tx.Commit()
+	
+	freeparagraphs.CreateParagraphs(golog, locale,themes,paragraphs)
+	
 
 }

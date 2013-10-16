@@ -3,14 +3,16 @@ package createfirstpage
 import (
 	"bytes"
 	"comutils"
-	"createfirstpagedb"
+	//	"createfirstpagedb"
 	"domains"
 	"html/template"
 	"log"
-	"makenewsite"
+	"queue/makenewsite"
+
 	"math/rand"
 	"os"
 	"path/filepath"
+	"queue/findfreeparagraph"
 	"time"
 	"titlegen"
 )
@@ -22,7 +24,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		"templ/index_first.html",
 	))
 
-	var paragraphid int64
+	//	var paragraphid int64
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
 
@@ -41,7 +43,13 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	}
 
 	ext := string(".html")
-	paragraphid, sentences := createfirstpagedb.FindFreeSentences(locale, themes)
+	//	paragraphid, sentences := createfirstpagedb.FindFreeSentences(locale, themes)
+
+	paragraph := findfreeparagraph.FindFromQ(locale, themes)
+
+	sentences := paragraph.Sentences
+
+	//	paragraph := findfreeparagraph.FindFromQ(locale, themes)
 
 	destkey := make([]string, len(keywords))
 
@@ -64,12 +72,28 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	rand.Seed(time.Now().UTC().UnixNano())
 	permphr := rand.Perm(len(phrases))
 
-	for i, v := range permphr {		
-		
+	for i, v := range permphr {
+
 		destphr[v] = comutils.UpcaseInitial(phrases[i])
 	}
 
-	go makenewsite.Makenew(locale, themes, host, pathinfo, title, paragraphid)
+	//	go makenewsite.Makenew(locale, themes, host, pathinfo, title, paragraphid)
+
+	firstPage := domains.FirstPage{
+
+		Locale:     locale,
+		Themes:     themes,
+		Domain:     host,
+		Pathinfo:   pathinfo,
+		Title:      title,
+		Ptitle:     paragraph.Ptitle,
+		Pphrase:    paragraph.Pphrase,
+		Phost:		paragraph.Phost,
+		Plocallink: paragraph.Plocallink,
+		Sentences:  paragraph.Sentences,
+	}
+
+	go makenewsite.MakeNewByQ(firstPage)
 
 	webinfo := domains.WebInfo{
 		Site:       host,

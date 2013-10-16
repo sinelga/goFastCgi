@@ -39,15 +39,9 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 
 		addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
-		//		if db.Close(); err != nil {
-		//
-		//			log.Fatal(err)
-		//		} else {
-
 		webcontents.Paragraphs = paragraphsarr
 		createpage.CreatePg(htmlfile, webcontents)
 
-		//		}
 	} else {
 
 		log.Println("Dont Create new PAGE!!")

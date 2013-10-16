@@ -6,6 +6,21 @@ import (
 //	"appengine/datastore"
 )
 
+type FirstPage struct {
+	Locale   string
+	Themes   string
+	Domain   string
+	Pathinfo string
+	Title string
+	Ptitle string
+	Pphrase string
+	Phost string
+	Plocallink string
+	Sentences []string
+
+
+}
+
 type Site struct {
 	Locale   string
 	Themes   string
@@ -52,6 +67,7 @@ type Paragraph struct {
 	Ptitle string
 	Pphrase string
 	Plocallink string
+	Phost string
 	Sentences []string	 	
 
 }

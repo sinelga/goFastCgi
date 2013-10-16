@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
 	"log"
+	"makenewsite"
 )
 
 func main() {
@@ -39,6 +40,28 @@ func main() {
 		}
 
 	}
+	
+	if qfirstpages, err := redis.Int(c.Do("LLEN", "firstpage")); err != nil {
+		log.Fatal(err)
+
+	} else {
+	
+		for i := 0; i < qfirstpages; i++ {
+			
+			bfirstpage, _ := redis.Bytes(c.Do("LPOP", "firstpage"))
+			var unmar domains.FirstPage
+			err := json.Unmarshal(bfirstpage, &unmar)
+			if err != nil {
+				log.Fatal(err)
+
+			}
+			makenewsite.Makenew(unmar)
+			
+		}	
+	
+	}	
+	
+	
 	c.Flush()
 	c.Close()
 

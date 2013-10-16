@@ -32,5 +32,6 @@ func PushInQueue(queuesys string,locale string,themes string,host string,pathinf
 		log.Println("in queue ",pgq)
 	
 	}
-	
+	c.Flush()
+	c.Close()
 }

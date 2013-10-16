@@ -5,6 +5,7 @@ import (
 	"createparagraphs"
 	"database/sql"
 	"flag"
+	"github.com/garyburd/redigo/redis"
 	"log"
 	"log/syslog"
 	"os"
@@ -47,16 +48,16 @@ func main() {
 
 			locale = "fi_FI"
 			themes = "porno"
-						
+
 		} else if *localeFlag == "it_IT" && *themesFlag == "finance" {
 
 			locale = "it_IT"
-			themes = "finance"	
-			
+			themes = "finance"
+
 		} else if *localeFlag == "fi_FI" && *themesFlag == "fortune" {
 
 			locale = "fi_FI"
-			themes = "fortune"			
+			themes = "fortune"
 
 		} else {
 
@@ -64,109 +65,95 @@ func main() {
 			os.Exit(0)
 
 		}
+		queuename := locale + ":" + themes
 
-		dbst, err := sql.Open("sqlite3", "gofast.db")
+		c, err := redis.Dial("tcp", ":6379")
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		sqlstr := "select count() as count from paragraphs where locale='" + locale + "' and themes='" + themes + "' and Siteid is null"
-
-		rows, err := dbst.Query(sqlstr)
-		if err != nil {
+		if countint, err := redis.Int(c.Do("LLEN", queuename)); err != nil {
 			log.Fatal(err)
-		}
-		defer rows.Close()
 
-		var count string
-		for rows.Next() {
-
-			rows.Scan(&count)
-		}
-		rows.Close()
-		log.Println("count free paragraphs", count)
-		dbst.Close()
-
-		golog.Info("Free parargraphs-> " + locale + " " + themes + " " + count)
-
-		countint, err := strconv.Atoi(count)
-		if err != nil {
-			os.Exit(2)
-		}
-
-		if countint < quant {
-		
-			golog.Info("Time make job add "+strconv.Itoa(quant)+" "+locale + " " + themes)
-
-			db, err := sql.Open("sqlite3", "singo.db")
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			sqlstr = "select keyword from keywords where locale='" + locale + "' and themes='" + themes + "'"
-
-			rows, err = db.Query(sqlstr)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer rows.Close()
-
-			for rows.Next() {
-				var keyword string
-				rows.Scan(&keyword)
-				keywordsarr = append(keywordsarr, keyword)
-
-			}
-			rows.Close()
-			log.Println("keywords", len(keywordsarr))
-
-			sqlstr = "select phrase from phrases where locale='" + locale + "' and themes='" + themes + "'"
-
-			rows, err = db.Query(sqlstr)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer rows.Close()
-
-			for rows.Next() {
-				var phrase string
-				rows.Scan(&phrase)
-				phrasesarr = append(phrasesarr, phrase)
-
-			}
-			rows.Close()
-			log.Println("Phrases", len(phrasesarr))
-
-			sqlstr = "select host from hosts where locale='" + locale + "' and themes='" + themes + "'"
-
-			rows, err = db.Query(sqlstr)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer rows.Close()
-
-			for rows.Next() {
-				var host string
-				rows.Scan(&host)
-				hostsarr = append(hostsarr, host)
-
-			}
-			rows.Close()
-			log.Println("hosts", len(hostsarr))
-
-			if db.Close(); err != nil {
-
-				log.Fatal(err)
-
-			} else {
-
-				createparagraphs.CreatePr(*golog,locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
-
-			}
 		} else {
+
+			c.Close()
 			
-			golog.Info("Not job for "+locale + " " + themes)
-					
-		} //make job
+			if countint < quant {
+
+				golog.Info("Time make job add " + strconv.Itoa(quant) + " " + locale + " " + themes)
+
+				db, err := sql.Open("sqlite3", "singo.db")
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				sqlstr := "select keyword from keywords where locale='" + locale + "' and themes='" + themes + "'"
+
+				rows, err := db.Query(sqlstr)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer rows.Close()
+
+				for rows.Next() {
+					var keyword string
+					rows.Scan(&keyword)
+					keywordsarr = append(keywordsarr, keyword)
+
+				}
+				rows.Close()
+				log.Println("keywords", len(keywordsarr))
+
+				sqlstr = "select phrase from phrases where locale='" + locale + "' and themes='" + themes + "'"
+
+				rows, err = db.Query(sqlstr)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer rows.Close()
+
+				for rows.Next() {
+					var phrase string
+					rows.Scan(&phrase)
+					phrasesarr = append(phrasesarr, phrase)
+
+				}
+				rows.Close()
+				log.Println("Phrases", len(phrasesarr))
+
+				sqlstr = "select host from hosts where locale='" + locale + "' and themes='" + themes + "'"
+
+				rows, err = db.Query(sqlstr)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer rows.Close()
+
+				for rows.Next() {
+					var host string
+					rows.Scan(&host)
+					hostsarr = append(hostsarr, host)
+
+				}
+				rows.Close()
+				log.Println("hosts", len(hostsarr))
+
+				if db.Close(); err != nil {
+
+					log.Fatal(err)
+
+				} else {
+
+					createparagraphs.CreatePr(*golog, locale, themes, keywordsarr, phrasesarr, hostsarr, quant)
+
+				}
+			} else {
+				
+				log.Println("Not job for " + locale + " " + themes,countint,"ask for",quant)
+				golog.Info("Not job for " + locale + " " + themes)
+
+			} //make job
+
+		}
 	} //end quant
 }
