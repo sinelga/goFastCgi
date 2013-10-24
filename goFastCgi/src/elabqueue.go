@@ -61,9 +61,7 @@ func main() {
 		}
 
 	}
-	
-
-	
+		
 	
 	c.Flush()
 	c.Close()
