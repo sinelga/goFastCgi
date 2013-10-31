@@ -32,32 +32,6 @@ func CreateParagraphs(golog syslog.Writer, locale string, themes string, paragra
 
 	}
 
-//	if qpages, err := redis.Int(c.Do("LLEN", queuename)); err != nil {
-//		log.Fatal(err)
-//
-//	} else {
-//
-//		for i := 0; i < qpages; i++ {
-//
-//			msite, _ := redis.Bytes(c.Do("LPOP", queuename))
-//
-//			var unmar domains.Paragraph
-//			err := json.Unmarshal(msite, &unmar)
-//			if err != nil {
-//				log.Fatal(err)
-//
-//			}
-//
-//			log.Println(unmar.Pphrase)
-//
-//			//
-//			//			htmlfile := string("www/" + unmar.Locale + "/" + unmar.Themes + "/" + unmar.Domain + unmar.Pathinfo)
-//			//			log.Println(htmlfile)
-//			//
-//			//			htmlfileexist.StartCheck(htmlfile, unmar.Domain,unmar.Pathinfo)
-//
-//		}
-//
-//	}
+
 
 }

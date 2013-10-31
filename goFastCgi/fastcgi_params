@@ -24,6 +24,7 @@ fastcgi_param   HTTP_X_GWTSCRIPT   noscript;
 fastcgi_param   HTTP_X_DOMAIN	$host;
 fastcgi_param   HTTP_X_PATHINFO	 $request_uri;
 #fastcgi_param   HTTP_X_QUEUE	$queue;
+fastcgi_param   HTTP_X_CALLBACK $arg_callback;
 
 
 
