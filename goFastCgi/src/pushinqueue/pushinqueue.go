@@ -24,7 +24,9 @@ func PushInQueue(queuesys string,locale string,themes string,host string,pathinf
 	}
 	bsite, _ := json.Marshal(site)
 	
-	if pgq, err := c.Do("LPUSH", "pagetocreate", bsite); err != nil {
+//	if pgq, err := c.Do("LPUSH", "pagetocreate", bsite); err != nil {
+	if pgq, err := c.Do("SADD", "pagetocreate", bsite); err != nil {
+	
 		log.Fatal(err)
 
 	} else {

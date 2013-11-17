@@ -3,12 +3,10 @@ package createfirstpage
 import (
 	"bytes"
 	"comutils"
-	//	"createfirstpagedb"
 	"domains"
 	"html/template"
 	"log"
 	"queue/makenewsite"
-
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -43,13 +41,10 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 	}
 
 	ext := string(".html")
-	//	paragraphid, sentences := createfirstpagedb.FindFreeSentences(locale, themes)
 
 	paragraph := findfreeparagraph.FindFromQ(locale, themes)
 
 	sentences := paragraph.Sentences
-
-	//	paragraph := findfreeparagraph.FindFromQ(locale, themes)
 
 	destkey := make([]string, len(keywords))
 
@@ -76,8 +71,6 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 
 		destphr[v] = comutils.UpcaseInitial(phrases[i])
 	}
-
-	//	go makenewsite.Makenew(locale, themes, host, pathinfo, title, paragraphid)
 
 	firstPage := domains.FirstPage{
 

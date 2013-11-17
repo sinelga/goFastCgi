@@ -11,9 +11,7 @@ import (
 	"net/http/fcgi"
 	"os"
 	"sync"
-	//	"strings"
 	"clean_pathinfo"
-//	"htmlfileexist"
 	"pushinqueue"
 )
 
@@ -52,7 +50,6 @@ func main() {
 }
 
 func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
-
 
 	startOnce.Do(func() {
 		startones()

@@ -17,7 +17,7 @@ func MakeNewByQ(firstpage  domains.FirstPage) {
 
 	bfirstpage, _ := json.Marshal(firstpage)
 
-	if pgq, err := c.Do("LPUSH", queuename, bfirstpage); err != nil {
+	if pgq, err := c.Do("SADD", queuename, bfirstpage); err != nil {
 		log.Fatal(err)
 
 	} else {

@@ -16,14 +16,14 @@ func main() {
 		log.Fatal(err)
 	}
 	
-	if qfirstpages, err := redis.Int(c.Do("LLEN", "firstpage")); err != nil {
+	if qfirstpages, err := redis.Int(c.Do("SCARD", "firstpage")); err != nil {
 		log.Fatal(err)
 
 	} else {
 	
 		for i := 0; i < qfirstpages; i++ {
 			
-			bfirstpage, _ := redis.Bytes(c.Do("LPOP", "firstpage"))
+			bfirstpage, _ := redis.Bytes(c.Do("SPOP", "firstpage"))
 			var unmar domains.FirstPage
 			err := json.Unmarshal(bfirstpage, &unmar)
 			if err != nil {
@@ -37,14 +37,14 @@ func main() {
 	}	
 	
 
-	if qpages, err := redis.Int(c.Do("LLEN", "pagetocreate")); err != nil {
+	if qpages, err := redis.Int(c.Do("SCARD", "pagetocreate")); err != nil {
 		log.Fatal(err)
 
 	} else {
 
 		for i := 0; i < qpages; i++ {
 
-			msite, _ := redis.Bytes(c.Do("LPOP", "pagetocreate"))
+			msite, _ := redis.Bytes(c.Do("SPOP", "pagetocreate"))
 
 			var unmar domains.Site
 			err := json.Unmarshal(msite, &unmar)
@@ -61,8 +61,7 @@ func main() {
 		}
 
 	}
-		
-	
+			
 	c.Flush()
 	c.Close()
 

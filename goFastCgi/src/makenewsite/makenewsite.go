@@ -8,11 +8,9 @@ import (
 	"time"
 )
 
-//func Makenew(locale string, themes string, host string, pathinfo string, title string, paragraphid int64) {
 func Makenew(firstpage domains.FirstPage) {
 
 	now := time.Now().Unix()
-	//	locale :=firstpage.
 
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
@@ -40,9 +38,6 @@ func Makenew(firstpage domains.FirstPage) {
 	} else {
 
 		siteid, _ := rs.LastInsertId()
-		//		log.Println("siteid",siteid)
-
-		//		stmt, err := tx.Prepare("update paragraphs set Siteid=? where rowid=?")
 		stmt, err := tx.Prepare("insert into paragraphs(Created,Siteid,Locale,Themes,Ptitle,Pphrase,Host,Locallink) values(?,?,?,?,?,?,?,?)")
 		if err != nil {
 			log.Fatal(err)
