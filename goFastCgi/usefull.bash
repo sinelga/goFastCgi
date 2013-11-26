@@ -1,7 +1,4 @@
 
-redis llen pagetocreate
-
-
 
 select count() from paragraphs where Siteid is null;
 
@@ -11,6 +8,25 @@ echo .dump | sqlite3 singo.db >backup.sql
 
 ## Backup
 echo '.dump' | sqlite3 singo.db | gzip -c >singo.dump.gz
+
+create index pridind on sentences (Prid);
+create index siteind on paragraphs (Siteid);
+
+PRAGMA writable_schema=ON;
+to alter table 
+Then do a manual UPDATE of the sqlite_master table to insert
+an "id INTEGER PRIMARY KEY" into the SQL for the table definition.
+
+Auto-VACCUM
+SQLite Auto-VACUUM does not do the same as VACUUM rather it only moves free pages to the end of the database thereby reducing the database size. By doing so it can significantly fragment the database while VACUUM ensures defragmentation. So Auto-VACUUM just keeps the database small.
+
+You can enable/disable SQLite auto-vacuuming by the following pragmas running at SQLite prompt:
+
+sqlite> PRAGMA auto_vacuum = NONE;  -- 0 means disable auto vacuum
+sqlite> PRAGMA auto_vacuum = INCREMENTAL;  -- 1 means enable incremental vacuum
+sqlite> PRAGMA auto_vacuum = FULL;  -- 2 means enable full auto vacuum
+
+
 
 sqlite3 singo.db 'delete from keywords where locale="it_IT" and Themes="finance"'
 sqlite3 singo.db 'insert into keywords (Locale,Themes,Keyword) select Locale,Themes,Keyword from it_IT_finance_keywords where Block=0'

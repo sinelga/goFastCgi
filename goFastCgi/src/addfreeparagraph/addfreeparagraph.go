@@ -25,8 +25,6 @@ func AddPr(db *sql.DB, siteid int64, locale string, themes string) {
 	}
 	defer stmt.Close()
 	if rs, err = stmt.Exec(now, siteid, locale, themes, paragraph.Ptitle, paragraph.Pphrase, paragraph.Phost, paragraph.Plocallink); err != nil {
-
-		//			log.Println("update paragraphs set Siteid=? where rowid=?")
 		log.Fatal(err)
 
 	} else {
@@ -49,20 +47,6 @@ func AddPr(db *sql.DB, siteid int64, locale string, themes string) {
 
 	}
 
-	//	stmt, err := tx.Prepare("update paragraphs set Siteid=? where rowid IN (select rowid from paragraphs where Siteid is null limit 1)")
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//	defer stmt.Close()
-	//	var rs sql.Result
-	//	if rs, err = stmt.Exec(siteid); err != nil {
-	//
-	//		log.Fatal(err)
-	//
-	//	} else {
-	//
-	//		log.Println("Update ok rs ", rs.LastInsertId)
-	//	}
 	stmt.Close()
 	tx.Commit()
 	

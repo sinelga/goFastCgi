@@ -14,8 +14,6 @@ import (
 
 func StartCheck(htmlfile string, host string, pathinfo string) {
 
-	//	log.Println("StartCheck", pathinfo)
-
 	var paragraphsarr []domains.Paragraph
 
 	//	db, err := sql.Open("sqlite3", "gofast.db")
