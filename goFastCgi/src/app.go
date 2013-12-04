@@ -5,14 +5,14 @@ import (
 	"createfirstpage"
 	"database/sql"
 	//	"encoding/json"
+	"clean_pathinfo"
 	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
-	"sync"
-	"clean_pathinfo"
 	"pushinqueue"
+	"sync"
 )
 
 var startOnce sync.Once
@@ -58,8 +58,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
 	log.Println(htmlfile)
-		
-	
+
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
@@ -72,11 +71,10 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 			} else if locale == "it_IT" && themes == "finance" {
 				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
-			}  else if locale == "fi_FI" && themes == "fortune" {
+			} else if locale == "fi_FI" && themes == "fortune" {
 				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
 			}
-			
-			
+
 			http.ServeFile(resp, req, htmlfile)
 
 		} else {
@@ -88,8 +86,8 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	} else {
 		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
 		http.ServeFile(resp, req, htmlfile)
-//		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
-		go pushinqueue.PushInQueue("redis",locale,themes,host,pathinfostr)
+		//		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
+		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
 
 	}
 }
@@ -102,7 +100,7 @@ func startones() {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("select Locale,Themes,Keyword from keywords")
+	rows, err := db.Query("select Locale,Themes,Keyword from keywords order by Hits desc")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -115,16 +113,25 @@ func startones() {
 
 		rows.Scan(&locale, &themes, &keyword)
 		if locale == "fi_FI" && themes == "finance" {
-			keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+
+			if len(keywordsarr_fi_FI_finance) < 1000 {
+				keywordsarr_fi_FI_finance = append(keywordsarr_fi_FI_finance, keyword)
+			}
 		} else if locale == "fi_FI" && themes == "porno" {
-			keywordsarr_fi_FI_porno = append(keywordsarr_fi_FI_porno, keyword)
+			if len(keywordsarr_fi_FI_porno) < 1000 {
+				keywordsarr_fi_FI_porno = append(keywordsarr_fi_FI_porno, keyword)
+			}
 
 		} else if locale == "it_IT" && themes == "finance" {
-			keywordsarr_it_IT_finance = append(keywordsarr_it_IT_finance, keyword)
+			if len(keywordsarr_it_IT_finance) < 1000 {
+				keywordsarr_it_IT_finance = append(keywordsarr_it_IT_finance, keyword)
+			}
 
 		} else if locale == "fi_FI" && themes == "fortune" {
-			keywordsarr_fi_FI_fortune = append(keywordsarr_fi_FI_fortune, keyword)
-		} 
+			if len(keywordsarr_fi_FI_fortune) < 1000 {
+				keywordsarr_fi_FI_fortune = append(keywordsarr_fi_FI_fortune, keyword)
+			}
+		}
 
 	}
 	rows.Close()
