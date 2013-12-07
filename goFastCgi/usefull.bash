@@ -1,4 +1,6 @@
-
+apt-get autoremove
+apt-get clean
+apt-get autoclean
 
 select count() from paragraphs where Siteid is null;
 
@@ -7,7 +9,11 @@ rm singo.db-journal singo.db
 echo .dump | sqlite3 singo.db >backup.sql
 
 ## Backup
-echo '.dump' | sqlite3 singo.db | gzip -c >singo.dump.gz
+echo '.dump' | sqlite3 gofast.db | gzip -c >gofast.dump.gz
+rm gofast.db
+zcat gofast.dump.gz | sqlite3 gofast.db
+##
+
 
 create index pridind on sentences (Prid);
 create index siteind on paragraphs (Siteid);
