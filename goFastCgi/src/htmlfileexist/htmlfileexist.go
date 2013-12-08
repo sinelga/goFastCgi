@@ -1,6 +1,8 @@
 package htmlfileexist
 
 import (
+	"os"
+	"time"
 	"addfreeparagraph"
 	"checkdbexist"
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
@@ -9,10 +11,12 @@ import (
 	"domains"
 	"getalldbparagraphs"
 	"log"
+	"log/syslog"
 	"sentencesforpr"
+	"strconv"
 )
 
-func StartCheck(htmlfile string, host string, pathinfo string) {
+func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo string) {
 
 	var paragraphsarr []domains.Paragraph
 
@@ -22,27 +26,38 @@ func StartCheck(htmlfile string, host string, pathinfo string) {
 		log.Fatal(err)
 	}
 
-	webcontents := checkdbexist.Checkdb(db, host, pathinfo)
-	
-	log.Println("StartCheck:webcontents.Hits", webcontents.Hits,"webcontents.Rowid",webcontents.Rowid)
+	webcontents := checkdbexist.Checkdb(golog, db, host, pathinfo)
 
-	if webcontents.Hits < 10 {
+//	log.Println("StartCheck:webcontents.Hits", webcontents.Hits, "webcontents.Rowid", webcontents.Rowid)
 
-		paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
+	if webcontents.Rowid > 0 {
+		
+		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
-		for i, paragraph := range paragraphsarr {
+		if webcontents.Hits < 10 && deltamin > 10 {
 
-			paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
+			paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
+
+			for i, paragraph := range paragraphsarr {
+
+				paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
+			}
+
+			addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
+
+			webcontents.Paragraphs = paragraphsarr
+			createpage.CreatePg(htmlfile, webcontents)
+
+		} else {
+
+			golog.Info("Dont Update page hits > 10 --> "+strconv.Itoa(webcontents.Hits )+" or delatamin to shot "+strconv.Itoa(deltamin)+" "+htmlfile)
+
 		}
-
-		addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
-
-		webcontents.Paragraphs = paragraphsarr
-		createpage.CreatePg(htmlfile, webcontents)
 
 	} else {
 
-		log.Println("Dont Create new PAGE!!")
+		golog.Warning("recod don't exit must delete file " + htmlfile)
+		os.Remove(htmlfile)
 
 	}
 

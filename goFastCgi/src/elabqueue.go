@@ -6,18 +6,29 @@ import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
 	"log"
+	"log/syslog"
 	"makenewsite"
 )
 
 func main() {
 
+	golog, err := syslog.New(syslog.LOG_ERR, "golog")
+
+	defer golog.Close()
+	if err != nil {
+		log.Fatal("error writing syslog!!")
+
+	}
+
 	c, err := redis.Dial("tcp", ":6379")
 	if err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Crit(err.Error())
 	}
 	
 	if qfirstpages, err := redis.Int(c.Do("SCARD", "firstpage")); err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Crit(err.Error())
 
 	} else {
 	
@@ -56,7 +67,7 @@ func main() {
 			htmlfile := string("www/" + unmar.Locale + "/" + unmar.Themes + "/" + unmar.Domain + unmar.Pathinfo)
 			log.Println(htmlfile)
 			
-			htmlfileexist.StartCheck(htmlfile, unmar.Domain,unmar.Pathinfo)
+			htmlfileexist.StartCheck(*golog,htmlfile, unmar.Domain,unmar.Pathinfo)
 
 		}
 

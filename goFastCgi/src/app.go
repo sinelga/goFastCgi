@@ -7,12 +7,14 @@ import (
 	//	"encoding/json"
 	"clean_pathinfo"
 	"log"
+	"log/syslog"
 	"net"
 	"net/http"
 	"net/http/fcgi"
 	"os"
 	"pushinqueue"
 	"sync"
+	"strconv"
 )
 
 var startOnce sync.Once
@@ -40,7 +42,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-	log.Println("Server Start")
+//	log.Println("Server Start")
 	listener, err := net.Listen("tcp", "127.0.0.1:8000")
 	if err != nil {
 		log.Fatal(err)
@@ -51,19 +53,27 @@ func main() {
 
 func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
+	golog, err := syslog.New(syslog.LOG_ERR, "golog")
+
+	defer golog.Close()
+	if err != nil {
+		log.Fatal("error writing syslog!!")
+
+	}
+
 	startOnce.Do(func() {
-		startones()
+		startones(*golog)
 	})
 	pathinfostr := clean_pathinfo.CleanPath(pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-	log.Println(htmlfile)
 
 	if _, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 
-			log.Println("file does not exist")
+//			log.Println("file does not exist")
+			golog.Info(htmlfile+" don't exist")
 			if locale == "fi_FI" && themes == "finance" {
 				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
 			} else if locale == "fi_FI" && themes == "porno" {
@@ -79,22 +89,24 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 		} else {
 			// other error
-			log.Println("something wrong???")
+//			log.Println("something wrong???")
+			golog.Err("something wrong???")
 
 		}
 
 	} else {
-		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
+//		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
+		golog.Info(htmlfile+" exist")
 		http.ServeFile(resp, req, htmlfile)
-		//		go htmlfileexist.StartCheck(htmlfile, host, pathinfostr)
 		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
 
 	}
 }
 
-func startones() {
+func startones(golog syslog.Writer) {
 
-	log.Println("startones")
+//	log.Println("startones")
+	golog.Info("startones")
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {
 		log.Fatal(err)
@@ -135,10 +147,10 @@ func startones() {
 
 	}
 	rows.Close()
-	log.Println("keywordsarr_fi_FI_finance", len(keywordsarr_fi_FI_finance))
-	log.Println("keywordsarr_fi_FI_porno", len(keywordsarr_fi_FI_porno))
-	log.Println("keywordsarr_it_IT_finance", len(keywordsarr_it_IT_finance))
-	log.Println("keywordsarr_fi_FI_fortune", len(keywordsarr_fi_FI_fortune))
+	golog.Info("keywordsarr_fi_FI_finance "+strconv.Itoa(len(keywordsarr_fi_FI_finance)))
+	golog.Info("keywordsarr_fi_FI_porno "+strconv.Itoa(len(keywordsarr_fi_FI_porno)))
+	golog.Info("keywordsarr_it_IT_finance "+strconv.Itoa(len(keywordsarr_it_IT_finance)))
+	golog.Info("keywordsarr_fi_FI_fortune "+strconv.Itoa(len(keywordsarr_fi_FI_fortune)))
 
 	rows, err = db.Query("select Locale,Themes,Phrase from phrases")
 	if err != nil {
@@ -164,10 +176,11 @@ func startones() {
 
 	}
 	rows.Close()
-	log.Println("phrasesarr_fi_FI_finance", len(phrasesarr_fi_FI_finance))
-	log.Println("phrasesarr_fi_FI_porno", len(phrasesarr_fi_FI_porno))
-	log.Println("phrasesarr_it_IT_finance", len(phrasesarr_it_IT_finance))
-	log.Println("phrasesarr_fi_FI_fortune", len(phrasesarr_fi_FI_fortune))
+
+	golog.Info("phrasesarr_fi_FI_finance "+strconv.Itoa(len(phrasesarr_fi_FI_finance)))
+	golog.Info("phrasesarr_fi_FI_porno "+strconv.Itoa(len(phrasesarr_fi_FI_porno)))
+	golog.Info("phrasesarr_it_IT_finance "+strconv.Itoa(len(phrasesarr_it_IT_finance)))
+	golog.Info("phrasesarr_fi_FI_fortune "+strconv.Itoa(len(phrasesarr_fi_FI_fortune)))
 	db.Close()
 
 }
