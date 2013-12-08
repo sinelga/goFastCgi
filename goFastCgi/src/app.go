@@ -92,7 +92,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 	} else {
 //		log.Println("fileexist", htmlfile, "host", host, "pathinfostr", pathinfostr)
-		golog.Info(htmlfile+" exist")
+//		golog.Info(htmlfile+" exist")
 		http.ServeFile(resp, req, htmlfile)
 		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
 
