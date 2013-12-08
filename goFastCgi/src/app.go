@@ -42,7 +42,6 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
 func main() {
 
-//	log.Println("Server Start")
 	listener, err := net.Listen("tcp", "127.0.0.1:8000")
 	if err != nil {
 		log.Fatal(err)
@@ -72,8 +71,6 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 		if os.IsNotExist(err) {
 
-//			log.Println("file does not exist")
-			golog.Info(htmlfile+" don't exist")
 			if locale == "fi_FI" && themes == "finance" {
 				createfirstpage.CreatePage(locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
 			} else if locale == "fi_FI" && themes == "porno" {
@@ -88,8 +85,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 			http.ServeFile(resp, req, htmlfile)
 
 		} else {
-			// other error
-//			log.Println("something wrong???")
+
 			golog.Err("something wrong???")
 
 		}
@@ -105,7 +101,6 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 func startones(golog syslog.Writer) {
 
-//	log.Println("startones")
 	golog.Info("startones")
 	db, err := sql.Open("sqlite3", "singo.db")
 	if err != nil {

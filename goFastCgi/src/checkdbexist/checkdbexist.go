@@ -7,7 +7,7 @@ import (
 	"log"
 	"log/syslog"
 	"time"
-	"strconv"
+//	"strconv"
 )
 
 func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) domains.WebContents {
@@ -54,21 +54,16 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 	}
 	rows.Close()
-
-	//	lastHitwas := time.Unix(updated, 0)
-	//
-	//	log.Println("Since last click ",int(time.Since(lastHitwas).Minutes()))
-	//	deltamin = int(time.Since(lastHitwas).Minutes())
 	
 	
-	golog.Info("rowid " + strconv.FormatInt(rowid,2) +" "+host+" "+pathinfo)
-	golog.Info("webcontents.rowid " + strconv.FormatInt(webcontents.Rowid,2)) 
+//	golog.Info("rowid " + strconv.FormatInt(rowid,2) +" "+host+" "+pathinfo)
+//	golog.Info("webcontents.rowid " + strconv.FormatInt(webcontents.Rowid,2)) 
 	
 	if rowid > 0 {
 
 		tx, err := db.Begin()
 		if err != nil {
-//			log.Fatal(err)
+
 			golog.Crit(err.Error())
 		}
 
@@ -78,13 +73,12 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 		stmt, err := tx.Prepare(sqlstr)
 		if err != nil {
-//			log.Fatal(err)
+
 			golog.Crit(err.Error())
 		}
 		defer stmt.Close()
 		if _, err = stmt.Exec(newhits, now, rowid); err != nil {
-//			log.Println("update sites set Hits = ?,Updated=? where rowid = ?")
-//			log.Fatal(err)
+
 			golog.Crit(err.Error())
 		}
 
