@@ -86,7 +86,7 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 	} else {
 
-		golog.Warning("Record for " + host + " " + pathinfo + " dont exist in sites!!!")
+		golog.Warning("Record for " + host + "/" + pathinfo + " dont exist in sites!!!")
 
 	}
 
