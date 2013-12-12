@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func FindFromQ(locale string, themes string) domains.Paragraph  {
+func FindFromQ(locale string, themes string) (domains.Paragraph,string)  {
 
 	c, err := redis.Dial("tcp", ":6379")
 	if err != nil {
@@ -15,6 +15,21 @@ func FindFromQ(locale string, themes string) domains.Paragraph  {
 	}
 
 	queuename := locale + ":" + themes
+	newdomainsqueuename := "newdomains:" + queuename
+	var newdomain string
+	
+	if quan_newdomains,err := redis.Int(c.Do("SCARD", newdomainsqueuename)); err != nil {
+		log.Fatal(err)
+	} else {
+		
+		if quan_newdomains > 0{
+		
+			 newdomain,_ =redis.String(c.Do("SRANDMEMBER", newdomainsqueuename))
+		
+		}
+	
+	}
+			
 	var unmarPar domains.Paragraph
 
 	if quan_prs, err := redis.Int(c.Do("LLEN", queuename)); err != nil {
@@ -39,7 +54,6 @@ func FindFromQ(locale string, themes string) domains.Paragraph  {
 
 		}
 
-
 	}
-	return unmarPar
+	return unmarPar,newdomain
 }

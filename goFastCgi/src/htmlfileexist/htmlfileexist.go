@@ -43,7 +43,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 				paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
 			}
 
-			addfreeparagraph.AddPr(db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
+			addfreeparagraph.AddPr(golog ,db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
 			webcontents.Paragraphs = paragraphsarr
 			createpage.CreatePg(htmlfile, webcontents)

@@ -47,6 +47,7 @@ type Phrase struct {
 	Phrase  string
 	Grating int
 	Urlstr  string
+	
 }
 
 type WebInfo struct {
@@ -57,6 +58,7 @@ type WebInfo struct {
 	UpKeywords []string
 	Title      string
 	Phrases    []string
+	Newdomain string
 }
 
 type Paragraph struct {

@@ -6,23 +6,22 @@ import (
 	"domains"
 	"html/template"
 	"log"
-	"queue/makenewsite"
+	"log/syslog"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"queue/findfreeparagraph"
+	"queue/makenewsite"
 	"time"
 	"titlegen"
 )
 
-func CreatePage(locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
+func CreatePage(golog syslog.Writer, locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
 
 	var index = template.Must(template.ParseFiles(
 		"templ/_base_first.html",
 		"templ/index_first.html",
 	))
-
-	//	var paragraphid int64
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
 
@@ -42,7 +41,12 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 
 	ext := string(".html")
 
-	paragraph := findfreeparagraph.FindFromQ(locale, themes)
+	paragraph, newdomain := findfreeparagraph.FindFromQ(locale, themes)
+
+	if newdomain != "" {
+//		log.Println("new domain", newdomain)
+		golog.Info("new domain "+newdomain)
+	}
 
 	sentences := paragraph.Sentences
 
@@ -81,7 +85,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		Title:      title,
 		Ptitle:     paragraph.Ptitle,
 		Pphrase:    paragraph.Pphrase,
-		Phost:		paragraph.Phost,
+		Phost:      paragraph.Phost,
 		Plocallink: paragraph.Plocallink,
 		Sentences:  paragraph.Sentences,
 	}
@@ -96,6 +100,7 @@ func CreatePage(locale string, themes string, host string, pathinfo string, keyw
 		UpKeywords: upcasesomekeywords,
 		Title:      title,
 		Phrases:    destphr[:5],
+		Newdomain:  newdomain,
 	}
 
 	webpage := bytes.NewBuffer(nil)

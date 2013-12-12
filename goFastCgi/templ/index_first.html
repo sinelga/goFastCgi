@@ -1,5 +1,4 @@
 
-
 {{ define "content" }}
 <div class="panel-heading">
 <ul class="nav nav-pills">
@@ -9,9 +8,12 @@
 </ul>	
 </div>        
      
-    <h1 class="well well-lg">{{.Title }}</h1>
+    <h1 class="well well-lg">{{.Title }}</h1>    
 	<h2 class="well"> {{index .UpKeywords 0}} {{index .Keywords 1}}.</h2> 
     <div class="well well-sm">
 		{{range .Sentences}}{{.}}&nbsp;{{end}}
 	</div>
+	{{if .Newdomain}}
+	<li><a href="http://{{.Newdomain}}/{{index .Keywords 2}}{{.Ext}}">{{index .UpKeywords 2}}</a></li>
+	{{end}}
 {{ end }}
