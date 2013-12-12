@@ -2,6 +2,11 @@ apt-get autoremove
 apt-get clean
 apt-get autoclean
 
+
+bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
+
+
+
 select count() from paragraphs where Siteid is null;
 
 cp  singo.db  singo.db.last
