@@ -28,7 +28,6 @@ func CreatePr(golog syslog.Writer, locale string, themes string, keywords []stri
 
 	markfile = selectmarkfile.SelectFile(golog, locale, themes)
 
-	log.Println("markfile -> ", markfile)
 	golog.Info("markfile -> " + markfile)
 
 	//For start Mark
