@@ -55,32 +55,45 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		f, err := os.Open(htmlfile)
 		if err != nil {
-//			fmt.Println(err)
+			//			fmt.Println(err)
 			golog.Err(err.Error())
 			return
 		}
 		defer f.Close()
-		
+
 		fi, err := f.Stat()
 		if err != nil {
-//			fmt.Println(err)
+			//			fmt.Println(err)
 			golog.Err(err.Error())
 			return
 		}
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
 			// do directory stuff
-//			fmt.Println("directory")
-			golog.Info("directory "+htmlfile)
+			//			fmt.Println("directory")
+			golog.Info("directory " + htmlfile)
+			golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+
+			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+				if os.IsNotExist(err) {
+					//                        return false
+					golog.Warning("Don't exit "+htmlfile + "/index.html")
+				} else {
+				
+					os.Remove(htmlfile+"/index.html")
+				}
+			}
+			//			os.Remove(htmlfile+/index.html)
+
 		case mode.IsRegular():
 			// do file stuff
-//			fmt.Println("file")
-			golog.Info("file "+htmlfile)
+			//			fmt.Println("file")
+			golog.Info("file " + htmlfile)
 			golog.Warning("recod don't exit must delete file " + htmlfile)
 			os.Remove(htmlfile)
-			
+
 		}
-	
+
 	}
 
 	if db.Close(); err != nil {
