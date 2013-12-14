@@ -27,11 +27,11 @@ func Makeclean(db *sql.DB, siteid int) {
 		paragraphsidtodelete = append(paragraphsidtodelete, paragrphid)
 	}
 
-	if len(paragraphsidtodelete) > 5 {
+//	if len(paragraphsidtodelete) > 5 {
 
 		deleteall(db, siteid, paragraphsidtodelete)
 
-	}
+//	}
 
 }
 
