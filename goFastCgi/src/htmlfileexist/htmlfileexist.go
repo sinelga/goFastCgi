@@ -77,10 +77,11 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 				if os.IsNotExist(err) {
 					//                        return false
 					golog.Warning("Don't exit " + htmlfile + "/index.html")
-				} else {
+				} 
+			} else {
 					golog.Warning("OK delete " + htmlfile + "/index.html")
 					os.Remove(htmlfile + "/index.html")
-				}
+			
 			}
 			//			os.Remove(htmlfile+/index.html)
 
