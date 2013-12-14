@@ -22,9 +22,7 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 	var allhits int
 
 	var webcontents domains.WebContents
-	//	var deltamin int
-//	golog.Info("Start  Checkdb")
-	
+
 
 	now := time.Now().Unix()
 
@@ -54,10 +52,6 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 	}
 	rows.Close()
-	
-	
-//	golog.Info("rowid " + strconv.FormatInt(rowid,2) +" "+host+" "+pathinfo)
-//	golog.Info("webcontents.rowid " + strconv.FormatInt(webcontents.Rowid,2)) 
 	
 	if rowid > 0 {
 

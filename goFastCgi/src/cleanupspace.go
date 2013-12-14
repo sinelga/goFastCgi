@@ -65,7 +65,7 @@ func main() {
 
 					if os.IsNotExist(err) {
 //						log.Fatall("file does not exist??? Cant be!!! but delete record from DB anyway")
-						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!!")
+						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!! id ->",site.Id)
 						cleandb.Makeclean(db, site.Id)
 
 					}
