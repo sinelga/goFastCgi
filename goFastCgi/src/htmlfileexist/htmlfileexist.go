@@ -69,18 +69,17 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 		}
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
-			// do directory stuff
-			//			fmt.Println("directory")
+	
 			golog.Info("directory " + htmlfile)
 			golog.Warning("try delete index.html file " + htmlfile + "/index.html")
 
 			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
 				if os.IsNotExist(err) {
 					//                        return false
-					golog.Warning("Don't exit "+htmlfile + "/index.html")
+					golog.Warning("Don't exit " + htmlfile + "/index.html")
 				} else {
-				
-					os.Remove(htmlfile+"/index.html")
+					golog.Warning("OK delete " + htmlfile + "/index.html")
+					os.Remove(htmlfile + "/index.html")
 				}
 			}
 			//			os.Remove(htmlfile+/index.html)
