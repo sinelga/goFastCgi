@@ -57,7 +57,6 @@ func main() {
 
 			for _, site := range sitearr {
 
-				//	  	log.Println(site.Site,site.Pathinfo)
 				htmlfile = "www/" + site.Locale + "/" + site.Themes + "/" + site.Site + site.Pathinfo
 
 				log.Println(htmlfile)
@@ -65,7 +64,9 @@ func main() {
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
 					if os.IsNotExist(err) {
-						log.Fatalln("file does not exist??? Cant be!!!")
+//						log.Fatall("file does not exist??? Cant be!!! but delete record from DB anyway")
+						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!!")
+						cleandb.Makeclean(db, site.Id)
 
 					}
 
