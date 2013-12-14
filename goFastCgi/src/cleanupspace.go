@@ -18,13 +18,14 @@ type Site struct {
 	Pathinfo string
 }
 
-var hitsflag = flag.Int("hits", 0, "hits must be > 0 normal 10 and more")
+var hitsflag = flag.Int("hits", 0, "hits must be >= 0 normal 10 and more")
+var createdflag =  flag.Int("created", 0, "created in days ago mast must be > 0 normal 20-30 and more")
 
 func main() {
 
 	flag.Parse()
 
-	if *hitsflag > 0 {
+	if *hitsflag >= 0 &&  *createdflag > 0 {
 		
 		var sitearr []Site
 
@@ -33,7 +34,10 @@ func main() {
 			log.Fatal(err)
 		}
 		defer db.Close()
-		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >"+ strconv.Itoa(*hitsflag)
+		
+		seccreated := *createdflag*24*60*60 
+		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >="+ strconv.Itoa(*hitsflag)+" or Created < (strftime('%s','now') -"+ strconv.Itoa(seccreated)+")"
+		log.Println(sqlstr)
 
 		rows, err := db.Query(sqlstr)
 		if err != nil {

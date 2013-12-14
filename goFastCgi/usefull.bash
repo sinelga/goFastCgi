@@ -4,6 +4,7 @@ apt-get autoclean
 
 
 bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
+bin/cleanupspace -hits=20 -created=20
 
 
 

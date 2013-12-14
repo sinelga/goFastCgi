@@ -66,6 +66,8 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	pathinfostr := clean_pathinfo.CleanPath(pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
+		
+		
 
 	if _, err := os.Stat(htmlfile); err != nil {
 

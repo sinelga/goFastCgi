@@ -57,7 +57,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 		if err != nil {
 			//			fmt.Println(err)
 			golog.Err(err.Error())
-			return
+			//			return
 		}
 		defer f.Close()
 
@@ -65,11 +65,11 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 		if err != nil {
 			//			fmt.Println(err)
 			golog.Err(err.Error())
-			return
+//			return
 		}
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
-	
+
 			golog.Info("directory " + htmlfile)
 			golog.Warning("try delete index.html file " + htmlfile + "/index.html")
 
@@ -77,11 +77,11 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 				if os.IsNotExist(err) {
 					//                        return false
 					golog.Warning("Don't exit " + htmlfile + "/index.html")
-				} 
+				}
 			} else {
-					golog.Warning("OK delete " + htmlfile + "/index.html")
-					os.Remove(htmlfile + "/index.html")
-			
+				golog.Warning("OK delete " + htmlfile + "/index.html")
+				os.Remove(htmlfile + "/index.html")
+
 			}
 			//			os.Remove(htmlfile+/index.html)
 
