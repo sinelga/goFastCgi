@@ -1,8 +1,6 @@
 package htmlfileexist
 
 import (
-	"os"
-	"time"
 	"addfreeparagraph"
 	"checkdbexist"
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
@@ -12,15 +10,16 @@ import (
 	"getalldbparagraphs"
 	"log"
 	"log/syslog"
+	"os"
 	"sentencesforpr"
 	"strconv"
+	"time"
 )
 
 func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo string) {
 
 	var paragraphsarr []domains.Paragraph
 
-	//	db, err := sql.Open("sqlite3", "gofast.db")
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
@@ -28,10 +27,8 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	webcontents := checkdbexist.Checkdb(golog, db, host, pathinfo)
 
-//	log.Println("StartCheck:webcontents.Hits", webcontents.Hits, "webcontents.Rowid", webcontents.Rowid)
-
 	if webcontents.Rowid > 0 {
-		
+
 		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
 		if webcontents.Hits < 5 && deltamin > 30 {
@@ -43,22 +40,47 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 				paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
 			}
 
-			addfreeparagraph.AddPr(golog ,db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
+			addfreeparagraph.AddPr(golog, db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
 			webcontents.Paragraphs = paragraphsarr
 			createpage.CreatePg(htmlfile, webcontents)
 
 		} else {
 
-			golog.Info("Dont Update page hits > (set 5) --> "+strconv.Itoa(webcontents.Hits )+" or delatamin (set 30) to shot "+strconv.Itoa(deltamin)+" "+htmlfile)
+			golog.Info("Dont Update page hits > (set 5) --> " + strconv.Itoa(webcontents.Hits) + " or delatamin (set 30) to shot " + strconv.Itoa(deltamin) + " " + htmlfile)
 
 		}
 
 	} else {
 
-		golog.Warning("recod don't exit must delete file " + htmlfile)
-		os.Remove(htmlfile)
-
+		f, err := os.Open(htmlfile)
+		if err != nil {
+//			fmt.Println(err)
+			golog.Err(err.Error())
+			return
+		}
+		defer f.Close()
+		
+		fi, err := f.Stat()
+		if err != nil {
+//			fmt.Println(err)
+			golog.Err(err.Error())
+			return
+		}
+		switch mode := fi.Mode(); {
+		case mode.IsDir():
+			// do directory stuff
+//			fmt.Println("directory")
+			golog.Info("directory "+htmlfile)
+		case mode.IsRegular():
+			// do file stuff
+//			fmt.Println("file")
+			golog.Info("file "+htmlfile)
+			golog.Warning("recod don't exit must delete file " + htmlfile)
+			os.Remove(htmlfile)
+			
+		}
+	
 	}
 
 	if db.Close(); err != nil {
