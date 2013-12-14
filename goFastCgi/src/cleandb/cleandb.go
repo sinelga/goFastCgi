@@ -23,7 +23,7 @@ func Makeclean(db *sql.DB, siteid int) {
 		var paragrphid int
 
 		rows.Scan(&paragrphid)
-		//		log.Println(paragrphid)
+		
 		paragraphsidtodelete = append(paragraphsidtodelete, paragrphid)
 	}
 
@@ -37,7 +37,7 @@ func Makeclean(db *sql.DB, siteid int) {
 
 func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 
-	log.Println("start delete")
+//	log.Println("start delete")
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -64,13 +64,14 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 
 		stmt.Close()
 
-		stmt, err = tx.Prepare("delete from sites where rowid=?")
+		stmt, err = tx.Prepare("delete from sites where id=?")
+		log.Println("delete site",siteid)
 
 		if _, err = stmt.Exec(siteid); err != nil {
 			log.Fatal(err)
 
 		}
-
+		stmt.Close()
 	}
 	tx.Commit()
 
