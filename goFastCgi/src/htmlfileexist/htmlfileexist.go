@@ -35,7 +35,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
-		if webcontents.Hits < 5 && deltamin > 3 {
+		if webcontents.Hits < 5 && deltamin > 30 {
 
 			paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
 

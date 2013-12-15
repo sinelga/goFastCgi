@@ -74,18 +74,6 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		if os.IsNotExist(err) {
 
 			fileNotExistCreate(*golog,resp,req,locale,themes,host,pathinfostr,htmlfile) 
-//			if locale == "fi_FI" && themes == "finance" {
-//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
-//			} else if locale == "fi_FI" && themes == "porno" {
-//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
-//
-//			} else if locale == "it_IT" && themes == "finance" {
-//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
-//			} else if locale == "fi_FI" && themes == "fortune" {
-//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
-//			}
-//
-//			http.ServeFile(resp, req, htmlfile)
 
 		} else {
 
