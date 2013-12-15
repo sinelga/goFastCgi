@@ -69,22 +69,23 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		
 		
 
-	if _, err := os.Stat(htmlfile); err != nil {
+	if fi, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 
-			if locale == "fi_FI" && themes == "finance" {
-				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
-			} else if locale == "fi_FI" && themes == "porno" {
-				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
-
-			} else if locale == "it_IT" && themes == "finance" {
-				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
-			} else if locale == "fi_FI" && themes == "fortune" {
-				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
-			}
-
-			http.ServeFile(resp, req, htmlfile)
+			fileNotExistCreate(*golog,resp,req,locale,themes,host,pathinfostr,htmlfile) 
+//			if locale == "fi_FI" && themes == "finance" {
+//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+//			} else if locale == "fi_FI" && themes == "porno" {
+//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+//
+//			} else if locale == "it_IT" && themes == "finance" {
+//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+//			} else if locale == "fi_FI" && themes == "fortune" {
+//				createfirstpage.CreatePage(*golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
+//			}
+//
+//			http.ServeFile(resp, req, htmlfile)
 
 		} else {
 
@@ -93,12 +94,63 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		}
 
 	} else {
+	
+			switch mode := fi.Mode(); {
 
-		http.ServeFile(resp, req, htmlfile)
+			case mode.IsDir():
+
+				golog.Info("directory " + htmlfile)
+//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+
+				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+					if os.IsNotExist(err) {
+
+						golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
+						fileNotExistCreate(*golog,resp,req,locale,themes,host,pathinfostr,htmlfile+"/index.html")
+						http.ServeFile(resp, req, htmlfile+"/index.html") 
+					}
+				} else {
+					golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
+//					os.Remove(htmlfile + "/index.html")
+					http.ServeFile(resp, req, htmlfile+"/index.html")
+
+				}
+
+			case mode.IsRegular():
+
+				golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
+				http.ServeFile(resp, req, htmlfile)
+				
+				
+//				os.Remove(htmlfile)
+
+			}
+		
+
+//		http.ServeFile(resp, req, htmlfile)
 		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
 
 	}
 }
+
+
+func fileNotExistCreate(golog syslog.Writer,resp http.ResponseWriter, req *http.Request,locale string,themes string,host string,pathinfostr string,htmlfile string) {
+
+			if locale == "fi_FI" && themes == "finance" {
+				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+			} else if locale == "fi_FI" && themes == "porno" {
+				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+
+			} else if locale == "it_IT" && themes == "finance" {
+				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+			} else if locale == "fi_FI" && themes == "fortune" {
+				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
+			}
+
+			http.ServeFile(resp, req, htmlfile)
+
+}
+
 
 func startones(golog syslog.Writer) {
 

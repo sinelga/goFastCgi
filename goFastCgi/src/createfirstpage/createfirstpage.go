@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"queue/findfreeparagraph"
 	"queue/makenewsite"
+	"checkpathinfo"
+//	"strings"
 	"time"
 	"titlegen"
 )
@@ -23,7 +25,12 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		"templ/index_first.html",
 	))
 
-	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfo)
+	//	var thispathinfo string
+
+	thispathinfo := checkpathinfo.Check(pathinfo)
+
+
+	htmlfile := string("www/" + locale + "/" + themes + "/" + host + thispathinfo)
 
 	path := filepath.Dir(htmlfile)
 	log.Println(path)
@@ -44,8 +51,8 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	paragraph, newdomain := findfreeparagraph.FindFromQ(locale, themes)
 
 	if newdomain != "" {
-//		log.Println("new domain", newdomain)
-		golog.Info("new domain "+newdomain)
+		//		log.Println("new domain", newdomain)
+		golog.Info("new domain " + newdomain)
 	}
 
 	sentences := paragraph.Sentences
@@ -65,7 +72,7 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		upcasesomekeywords[i] = comutils.UpcaseInitial(destkey[i])
 	}
 
-	title := comutils.UpcaseInitial(titlegen.GetTitle(locale, themes, host, pathinfo))
+	title := comutils.UpcaseInitial(titlegen.GetTitle(locale, themes, host, thispathinfo))
 
 	destphr := make([]string, len(phrases))
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -81,7 +88,7 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Locale:     locale,
 		Themes:     themes,
 		Domain:     host,
-		Pathinfo:   pathinfo,
+		Pathinfo:   thispathinfo,
 		Title:      title,
 		Ptitle:     paragraph.Ptitle,
 		Pphrase:    paragraph.Pphrase,

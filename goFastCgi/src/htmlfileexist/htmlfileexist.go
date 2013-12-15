@@ -13,25 +13,29 @@ import (
 	"os"
 	"sentencesforpr"
 	"strconv"
+//	"strings"
 	"time"
+	"checkpathinfo"
 )
 
 func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo string) {
 
 	var paragraphsarr []domains.Paragraph
+	
+	thispathinfo := checkpathinfo.Check(pathinfo)
 
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	webcontents := checkdbexist.Checkdb(golog, db, host, pathinfo)
+	webcontents := checkdbexist.Checkdb(golog, db, host, thispathinfo)
 
 	if webcontents.Rowid > 0 {
 
 		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
-		if webcontents.Hits < 5 && deltamin > 30 {
+		if webcontents.Hits < 5 && deltamin > 3 {
 
 			paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
 
@@ -43,7 +47,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 			addfreeparagraph.AddPr(golog, db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
 
 			webcontents.Paragraphs = paragraphsarr
-			createpage.CreatePg(htmlfile, webcontents)
+			createpage.CreatePg(golog,htmlfile, webcontents)
 
 		} else {
 
@@ -53,44 +57,44 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	} else {
 
-		f, err := os.Open(htmlfile)
-		if err != nil {
-			//			fmt.Println(err)
+		if f, err := os.Open(htmlfile); err != nil {
+
 			golog.Err(err.Error())
 			//			return
-		}
-		defer f.Close()
+		} else {
 
-		fi, err := f.Stat()
-		if err != nil {
-			//			fmt.Println(err)
-			golog.Err(err.Error())
-//			return
-		}
-		switch mode := fi.Mode(); {
-		case mode.IsDir():
+			defer f.Close()
 
-			golog.Info("directory " + htmlfile)
-			golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+			fi, err := f.Stat()
+			if err != nil {
+				//			fmt.Println(err)
+				golog.Err(err.Error())
+				//			return
+			}
+			switch mode := fi.Mode(); {
 
-			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-				if os.IsNotExist(err) {
-					//                        return false
-					golog.Warning("Don't exit " + htmlfile + "/index.html")
+			case mode.IsDir():
+
+				golog.Info("directory " + htmlfile)
+				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+
+				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+					if os.IsNotExist(err) {
+
+						golog.Warning("Don't exit " + htmlfile + "/index.html not think to delete")
+					}
+				} else {
+					golog.Warning("OK delete " + htmlfile + "/index.html")
+					os.Remove(htmlfile + "/index.html")
+
 				}
-			} else {
-				golog.Warning("OK delete " + htmlfile + "/index.html")
-				os.Remove(htmlfile + "/index.html")
+
+			case mode.IsRegular():
+
+				golog.Warning("recod don't exit must delete file " + htmlfile)
+				os.Remove(htmlfile)
 
 			}
-			//			os.Remove(htmlfile+/index.html)
-
-		case mode.IsRegular():
-			// do file stuff
-			//			fmt.Println("file")
-			golog.Info("file " + htmlfile)
-			golog.Warning("recod don't exit must delete file " + htmlfile)
-			os.Remove(htmlfile)
 
 		}
 
@@ -98,7 +102,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	if db.Close(); err != nil {
 
-		log.Fatal(err)
+		golog.Err(err.Error())
 	}
 
 }
