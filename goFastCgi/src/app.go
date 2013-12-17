@@ -13,8 +13,8 @@ import (
 	"net/http/fcgi"
 	"os"
 	"pushinqueue"
-	"sync"
 	"strconv"
+	"sync"
 )
 
 var startOnce sync.Once
@@ -66,14 +66,12 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	pathinfostr := clean_pathinfo.CleanPath(pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-		
-		
 
 	if fi, err := os.Stat(htmlfile); err != nil {
 
 		if os.IsNotExist(err) {
 
-			fileNotExistCreate(*golog,resp,req,locale,themes,host,pathinfostr,htmlfile) 
+			fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
 
 		} else {
 
@@ -82,63 +80,59 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		}
 
 	} else {
-	
-			switch mode := fi.Mode(); {
 
-			case mode.IsDir():
+		switch mode := fi.Mode(); {
 
-				golog.Info("directory " + htmlfile)
-//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+		case mode.IsDir():
 
-				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-					if os.IsNotExist(err) {
+			golog.Info("directory " + htmlfile)
+			//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
 
-						golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
-						fileNotExistCreate(*golog,resp,req,locale,themes,host,pathinfostr,htmlfile+"/index.html")
-						http.ServeFile(resp, req, htmlfile+"/index.html") 
-					}
-				} else {
-					golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
-//					os.Remove(htmlfile + "/index.html")
+			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+				if os.IsNotExist(err) {
+
+					golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
+					fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile+"/index.html")
 					http.ServeFile(resp, req, htmlfile+"/index.html")
-
 				}
-
-			case mode.IsRegular():
-
-				golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
-				http.ServeFile(resp, req, htmlfile)
-				
-				
-//				os.Remove(htmlfile)
+			} else {
+				//					golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
+				//					os.Remove(htmlfile + "/index.html")
+				http.ServeFile(resp, req, htmlfile+"/index.html")
 
 			}
-		
 
-//		http.ServeFile(resp, req, htmlfile)
+		case mode.IsRegular():
+
+			//				golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
+			http.ServeFile(resp, req, htmlfile)
+
+			//				os.Remove(htmlfile)
+
+		}
+
+		//		http.ServeFile(resp, req, htmlfile)
 		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
 
 	}
 }
 
+func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfostr string, htmlfile string) {
 
-func fileNotExistCreate(golog syslog.Writer,resp http.ResponseWriter, req *http.Request,locale string,themes string,host string,pathinfostr string,htmlfile string) {
+	if locale == "fi_FI" && themes == "finance" {
+		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+	} else if locale == "fi_FI" && themes == "porno" {
+		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
 
-			if locale == "fi_FI" && themes == "finance" {
-				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
-			} else if locale == "fi_FI" && themes == "porno" {
-				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+	} else if locale == "it_IT" && themes == "finance" {
+		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+	} else if locale == "fi_FI" && themes == "fortune" {
+		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
+	}
 
-			} else if locale == "it_IT" && themes == "finance" {
-				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
-			} else if locale == "fi_FI" && themes == "fortune" {
-				createfirstpage.CreatePage(golog,locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
-			}
-
-			http.ServeFile(resp, req, htmlfile)
+	http.ServeFile(resp, req, htmlfile)
 
 }
-
 
 func startones(golog syslog.Writer) {
 
@@ -183,10 +177,10 @@ func startones(golog syslog.Writer) {
 
 	}
 	rows.Close()
-	golog.Info("keywordsarr_fi_FI_finance "+strconv.Itoa(len(keywordsarr_fi_FI_finance)))
-	golog.Info("keywordsarr_fi_FI_porno "+strconv.Itoa(len(keywordsarr_fi_FI_porno)))
-	golog.Info("keywordsarr_it_IT_finance "+strconv.Itoa(len(keywordsarr_it_IT_finance)))
-	golog.Info("keywordsarr_fi_FI_fortune "+strconv.Itoa(len(keywordsarr_fi_FI_fortune)))
+	golog.Info("keywordsarr_fi_FI_finance " + strconv.Itoa(len(keywordsarr_fi_FI_finance)))
+	golog.Info("keywordsarr_fi_FI_porno " + strconv.Itoa(len(keywordsarr_fi_FI_porno)))
+	golog.Info("keywordsarr_it_IT_finance " + strconv.Itoa(len(keywordsarr_it_IT_finance)))
+	golog.Info("keywordsarr_fi_FI_fortune " + strconv.Itoa(len(keywordsarr_fi_FI_fortune)))
 
 	rows, err = db.Query("select Locale,Themes,Phrase from phrases")
 	if err != nil {
@@ -213,10 +207,10 @@ func startones(golog syslog.Writer) {
 	}
 	rows.Close()
 
-	golog.Info("phrasesarr_fi_FI_finance "+strconv.Itoa(len(phrasesarr_fi_FI_finance)))
-	golog.Info("phrasesarr_fi_FI_porno "+strconv.Itoa(len(phrasesarr_fi_FI_porno)))
-	golog.Info("phrasesarr_it_IT_finance "+strconv.Itoa(len(phrasesarr_it_IT_finance)))
-	golog.Info("phrasesarr_fi_FI_fortune "+strconv.Itoa(len(phrasesarr_fi_FI_fortune)))
+	golog.Info("phrasesarr_fi_FI_finance " + strconv.Itoa(len(phrasesarr_fi_FI_finance)))
+	golog.Info("phrasesarr_fi_FI_porno " + strconv.Itoa(len(phrasesarr_fi_FI_porno)))
+	golog.Info("phrasesarr_it_IT_finance " + strconv.Itoa(len(phrasesarr_it_IT_finance)))
+	golog.Info("phrasesarr_fi_FI_fortune " + strconv.Itoa(len(phrasesarr_fi_FI_fortune)))
 	db.Close()
 
 }
