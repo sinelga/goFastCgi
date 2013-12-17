@@ -50,7 +50,7 @@ func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebConte
 			
 		case mode.IsRegular():
 
-			golog.Info("IsRegular so remake " + htmlfile)
+//			golog.Info("IsRegular so remake " + htmlfile)
 			//				os.Remove(htmlfile)
 		}
 

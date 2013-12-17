@@ -66,8 +66,8 @@ func main() {
 			}
 
 			htmlfile := string("www/" + unmar.Locale + "/" + unmar.Themes + "/" + unmar.Domain + unmar.Pathinfo)
-			log.Println(htmlfile)
-			golog.Info("elabqueue: check existense "+htmlfile) 
+//			log.Println(htmlfile)
+//			golog.Info("elabqueue: check existense "+htmlfile) 
 
 			htmlfileexist.StartCheck(*golog, htmlfile, unmar.Domain, unmar.Pathinfo)
 
