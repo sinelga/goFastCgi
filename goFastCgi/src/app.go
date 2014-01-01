@@ -15,6 +15,7 @@ import (
 	"pushinqueue"
 	"strconv"
 	"sync"
+	"createfirstgz"
 )
 
 var startOnce sync.Once
@@ -119,18 +120,23 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfostr string, htmlfile string) {
 
+	var bytepage []byte
 	if locale == "fi_FI" && themes == "finance" {
-		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
 	} else if locale == "fi_FI" && themes == "porno" {
-		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
 
 	} else if locale == "it_IT" && themes == "finance" {
-		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
 	} else if locale == "fi_FI" && themes == "fortune" {
-		createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
+		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
 	}
 
-	http.ServeFile(resp, req, htmlfile)
+//	http.ServeFile(resp, req, htmlfile)
+	
+	resp.Write(bytepage)
+	go createfirstgz.Creategzhtml(golog,htmlfile,bytepage)
+	
 
 }
 

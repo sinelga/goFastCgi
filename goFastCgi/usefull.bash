@@ -6,7 +6,7 @@ apt-get autoclean
 bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
 bin/cleanupspace -hits=20 -created=20
 
-
+git gc --aggressive --prune=now
 
 select count() from paragraphs where Siteid is null;
 
@@ -50,7 +50,6 @@ sqlite3 singo.db 'delete from keywords where locale="fi_FI" and Themes="fortune"
 sqlite3 singo.db 'insert into keywords (Locale,Themes,Keyword) select Locale,Themes,Keyword from fi_FI_fortune_keywords where Block=0'
 sqlite3 singo.db 'delete from phrases where locale="fi_FI" and Themes="fortune"'
 sqlite3 singo.db 'insert into phrases (Phrase, Locale,Themes) select distinct Keyword as Phrase,"fi_FI" as Locale,"fortune" as Themes from fi_FI_fortune_phrases'
-
 
 
 !! delete ," space rom all_fi_FI_phrases !!

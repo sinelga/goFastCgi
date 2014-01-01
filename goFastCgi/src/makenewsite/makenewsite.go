@@ -24,7 +24,6 @@ func Makenew(firstpage domains.FirstPage) {
 
 	stmt, err := tx.Prepare("insert into sites(Created,Updated,AllHits,Hits,Locale,Themes,Site,Pathinfo,Title) values(?,?,?,?,?,?,?,?,?)")
 	if err != nil {
-		//		log.Println("insert into sites(Created,Updated,AllHits,Hits,Locale,Themes,Site,Pathinfo,Title) values(?,?,?,?,?,?,?,?,?)")
 		log.Fatal(err)
 	}
 	//	defer stmt.Close()
@@ -45,13 +44,11 @@ func Makenew(firstpage domains.FirstPage) {
 		//		defer stmt.Close()
 		if rs, err = stmt.Exec(now, siteid, firstpage.Locale, firstpage.Themes, firstpage.Ptitle, firstpage.Pphrase, firstpage.Phost, firstpage.Plocallink); err != nil {
 
-			//			log.Println("update paragraphs set Siteid=? where rowid=?")
 			log.Fatal(err)
 
 		} else {
 
 			paragrphid, _ := rs.LastInsertId()
-			//			log.Println("paragrphid",paragrphid)
 
 			for _, sentence := range firstpage.Sentences {
 				stmt, err := tx.Prepare("insert into sentences(Prid,Sentence) values(?,?)")

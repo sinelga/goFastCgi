@@ -16,19 +16,18 @@ import (
 //	"strings"
 	"time"
 	"titlegen"
+//	"compress/gzip"
+//	"io/ioutil"
 )
 
-func CreatePage(golog syslog.Writer, locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) {
+func CreatePage(golog syslog.Writer, locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) []byte{
 
 	var index = template.Must(template.ParseFiles(
 		"templ/_base_first.html",
 		"templ/index_first.html",
 	))
 
-	//	var thispathinfo string
-
 	thispathinfo := checkpathinfo.Check(pathinfo)
-
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + thispathinfo)
 
@@ -40,11 +39,11 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		log.Fatal(err)
 	}
 
-	file, err := os.Create(htmlfile)
-	if err != nil {
-		//		panic(err)
-		log.Fatal(err)
-	}
+//	file, err := os.Create(htmlfile)
+//	if err != nil {
+//		//		panic(err)
+//		log.Fatal(err)
+//	}
 
 	ext := string(".html")
 
@@ -118,8 +117,19 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	}
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
+	
+//	var b bytes.Buffer
+//	w := gzip.NewWriter(&b)
+//	w.Write(webpagebytes) 
+//	w.Close()
+//	log.Println("!!" +htmlfile+".gz")
+//	err = ioutil.WriteFile(htmlfile+".gz", b.Bytes(), 0666)
+	
 
-	file.Write(webpagebytes)
-	file.Close()
+//	file.Write(webpagebytes)
+//	file.Close()
 
+return webpagebytes
+
+	
 }

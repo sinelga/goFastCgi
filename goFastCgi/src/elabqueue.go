@@ -60,14 +60,11 @@ func main() {
 			var unmar domains.Site
 			err := json.Unmarshal(msite, &unmar)
 			if err != nil {
-//				log.Fatal(err)
 				golog.Crit(err.Error())
 
 			}
 
 			htmlfile := string("www/" + unmar.Locale + "/" + unmar.Themes + "/" + unmar.Domain + unmar.Pathinfo)
-//			log.Println(htmlfile)
-//			golog.Info("elabqueue: check existense "+htmlfile) 
 
 			htmlfileexist.StartCheck(*golog, htmlfile, unmar.Domain, unmar.Pathinfo)
 
