@@ -24,7 +24,7 @@ func main() {
 	
 	htmlfileflag := *htmlfileflag
 
-	if  strings.HasSuffix(htmlfileflag,".gz") {
+	if  strings.HasSuffix(htmlfileflag,".gz")  || strings.HasSuffix(htmlfileflag,"/index.html") {
 
 		golog.Info("goinotify: " + htmlfileflag + " event " + *eventflag)
 
@@ -50,6 +50,13 @@ func main() {
 			pushinqueue.PushInQueue(*golog, "redis", locale, themes, host, pathinfo)
 
 		}
+		
+//		if  strings.HasSuffix(htmlfileflag,"/index.html") {
+		
+		
+		
+		
+		
 
 	}
 

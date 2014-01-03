@@ -17,5 +17,11 @@ func Check(pathinfo string) string {
 
 	}
 
+	if !strings.HasSuffix(thispathinfo, "/index.html") && !strings.HasSuffix(thispathinfo, ".gz") && strings.HasSuffix(thispathinfo,".html") {
+
+		thispathinfo = thispathinfo + ".gz"
+
+	}
+
 	return thispathinfo
 }

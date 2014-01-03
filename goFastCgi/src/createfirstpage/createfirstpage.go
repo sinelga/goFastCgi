@@ -87,7 +87,8 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Locale:     locale,
 		Themes:     themes,
 		Domain:     host,
-		Pathinfo:   thispathinfo+".gz",
+//		Pathinfo:   thispathinfo+".gz",
+		Pathinfo:   thispathinfo,
 		Title:      title,
 		Ptitle:     paragraph.Ptitle,
 		Pphrase:    paragraph.Pphrase,
@@ -113,21 +114,12 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 
 	if err := index.Execute(webpage, webinfo); err != nil {
 
-		panic(err)
+//		panic(err)
+		golog.Err(err.Error())
 	}
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
 	
-//	var b bytes.Buffer
-//	w := gzip.NewWriter(&b)
-//	w.Write(webpagebytes) 
-//	w.Close()
-//	log.Println("!!" +htmlfile+".gz")
-//	err = ioutil.WriteFile(htmlfile+".gz", b.Bytes(), 0666)
-	
-
-//	file.Write(webpagebytes)
-//	file.Close()
 
 return webpagebytes
 

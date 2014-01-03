@@ -12,11 +12,9 @@ import (
 
 func PushInQueue(golog syslog.Writer,queuesys string,locale string,themes string,host string,pathinfo string) {
 
-//	log.Println("Start PushInQueue")
-//	golog.Info("Start PushInQueue: "+host+pathinfo)
 	c, err := redis.Dial("tcp", ":6379")
 	if err != nil {
-//		log.Fatal(err)
+
 		golog.Err(err.Error())
 	}
 

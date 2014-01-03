@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"sync"
 	"createfirstgz"
+	"strings"
 )
 
 var startOnce sync.Once
@@ -106,9 +107,6 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 		case mode.IsRegular():
 
 			golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
-//			http.ServeFile(resp, req, htmlfile)
-
-			//				os.Remove(htmlfile)
 
 		}
 
@@ -131,13 +129,15 @@ func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http
 	} else if locale == "fi_FI" && themes == "fortune" {
 		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
 	}
-
-//	http.ServeFile(resp, req, htmlfile)
 	
 	resp.Write(bytepage)
-	go createfirstgz.Creategzhtml(htmlfile,bytepage)
 	
-
+	if strings.HasSuffix(htmlfile,".html") {
+	
+		go createfirstgz.Creategzhtml(htmlfile,bytepage)
+	
+	}
+	
 }
 
 func startones(golog syslog.Writer) {

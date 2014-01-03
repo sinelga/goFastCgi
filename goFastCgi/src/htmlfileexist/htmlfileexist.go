@@ -23,6 +23,8 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 	var paragraphsarr []domains.Paragraph
 	
 	thispathinfo := checkpathinfo.Check(pathinfo)
+	
+	golog.Info("StartCheck: thispathinfo "+thispathinfo) 
 
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {

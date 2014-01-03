@@ -1,14 +1,15 @@
 package createfirstgz
 
 import (
-//	"bufio"
+	//	"bufio"
 	"bytes"
 	"compress/gzip"
 	"io/ioutil"
 	"log"
 	"log/syslog"
-//	"os"
+	//	"os"
 	"strings"
+	"checkpathinfo"
 )
 
 func Creategzhtml(htmlfile string, webpagebytes []byte) {
@@ -22,58 +23,66 @@ func Creategzhtml(htmlfile string, webpagebytes []byte) {
 	}
 
 	var index bool = false
-
-	var b bytes.Buffer
+	
 
 	golog.Info("Start Creategzhtml: " + htmlfile)
 
-	htmlfilesp := strings.Split(htmlfile, "/")
 
-	lastsplit := htmlfilesp[len(htmlfilesp)-1]
+	_htmlfile := checkpathinfo.Check(htmlfile)
+	
+	golog.Info("Creategzhtml: thispathinfo" + _htmlfile)
 
-	golog.Info("lastsplit " + lastsplit)
+	if strings.HasSuffix(_htmlfile, "/index.html") {
+	
+	  index = true
+	} 
 
-	var _htmlfile string
-	if strings.HasSuffix(htmlfile, ".gz") {
 
-		_htmlfile = htmlfile
-
-	} else if strings.Index(lastsplit, ".") > 0 {
-		_htmlfile = htmlfile + ".gz"
-
-	} else {
-
-		_htmlfile = htmlfile + "/index.html"
-		golog.Info("CreateIndex: " + _htmlfile)
-
-		index = true
-		//		file, err := os.Create(_htmlfile)
-		//		if err != nil {
-		//			golog.Crit(err.Error())
-		//		}
-
-		//		file.Write(webpagebytes)
-		//		file.Close()
-
-//		writer := bufio.NewWriter(&b)
-//		writer.Write(webpagebytes)
-//		writer.Flush()
-		//		writer.Flush()
-		//		file.Close()
-		if err := ioutil.WriteFile(_htmlfile, webpagebytes, 0666); err != nil {
-			golog.Crit(err.Error())
-		}
-
-	}
+//	htmlfilesp := strings.Split(htmlfile, "/")
+//
+//	lastsplit := htmlfilesp[len(htmlfilesp)-1]
+//
+//	golog.Info("lastsplit " + lastsplit)
+//
+//	var _htmlfile string
+//	if strings.HasSuffix(htmlfile, ".gz") {
+//
+//		_htmlfile = htmlfile
+//
+//	} else if strings.Index(lastsplit, ".") > 0 && lastsplit != "index.html" {
+//		_htmlfile = htmlfile + ".gz"
+//
+//	} else if lastsplit == "index.html" {
+//
+//		index = true
+//		_htmlfile = htmlfile
+//
+//	} else {
+//
+//		_htmlfile = htmlfile + "/index.html"
+//		golog.Info("CreateIndex: " + _htmlfile)
+//
+//		index = true
+//
+//	}
 
 	if !index {
-		golog.Info("Creategzhtml: " + _htmlfile)
+		golog.Info("Creategzhtml: gz file " + _htmlfile)
+		
+		var b bytes.Buffer
 
 		w := gzip.NewWriter(&b)
 		w.Write(webpagebytes)
 		w.Close()
 
 		if err := ioutil.WriteFile(_htmlfile, b.Bytes(), 0666); err != nil {
+			golog.Crit(err.Error())
+		}
+	} else {
+         
+         golog.Info("Creategzhtml: index.html " + _htmlfile)
+		
+		if err := ioutil.WriteFile(_htmlfile, webpagebytes, 0666); err != nil {
 			golog.Crit(err.Error())
 		}
 	}
