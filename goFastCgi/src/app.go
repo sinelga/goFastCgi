@@ -64,7 +64,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	startOnce.Do(func() {
 		startones(*golog)
 	})
-	pathinfostr := clean_pathinfo.CleanPath(pathinfo)
+	pathinfostr := clean_pathinfo.CleanPath(*golog,pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
 
@@ -76,7 +76,7 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 		} else {
 
-			golog.Err("something wrong???")
+			golog.Err("something wrong??? "+pathinfostr+" "+ htmlfile)
 
 		}
 
@@ -94,26 +94,26 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 
 					golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
 					fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile+"/index.html")
-					http.ServeFile(resp, req, htmlfile+"/index.html")
+//					http.ServeFile(resp, req, htmlfile+"/index.html")
 				}
 			} else {
-				//					golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
+//									golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
 				//					os.Remove(htmlfile + "/index.html")
-				http.ServeFile(resp, req, htmlfile+"/index.html")
+//				http.ServeFile(resp, req, htmlfile+"/index.html")
 
 			}
 
 		case mode.IsRegular():
 
-			//				golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
-			http.ServeFile(resp, req, htmlfile)
+			golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
+//			http.ServeFile(resp, req, htmlfile)
 
 			//				os.Remove(htmlfile)
 
 		}
 
 		//		http.ServeFile(resp, req, htmlfile)
-		go pushinqueue.PushInQueue("redis", locale, themes, host, pathinfostr)
+		go pushinqueue.PushInQueue(*golog,"redis", locale, themes, host, pathinfostr)
 
 	}
 }
@@ -135,7 +135,7 @@ func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http
 //	http.ServeFile(resp, req, htmlfile)
 	
 	resp.Write(bytepage)
-	go createfirstgz.Creategzhtml(golog,htmlfile,bytepage)
+	go createfirstgz.Creategzhtml(htmlfile,bytepage)
 	
 
 }

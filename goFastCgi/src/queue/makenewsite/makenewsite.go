@@ -17,14 +17,15 @@ func MakeNewByQ(firstpage  domains.FirstPage) {
 
 	bfirstpage, _ := json.Marshal(firstpage)
 
-	if pgq, err := c.Do("SADD", queuename, bfirstpage); err != nil {
+	if _, err := c.Do("SADD", queuename, bfirstpage); err != nil {
 		log.Fatal(err)
 
-	} else {
-
-		log.Println("in queue ",queuename, pgq)
-
-	}
+	} 
+//	else {
+//
+//		log.Println("in queue ",queuename, pgq)
+//
+//	}
 
 	c.Flush()
 	c.Close()

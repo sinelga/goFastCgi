@@ -4,23 +4,25 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"domains"
-	"log"
+//	"log"
+	"log/syslog"
 	"strconv"
 	"strings"
 )
 
-func GetAllPr(db *sql.DB, siteid int64,site string) []domains.Paragraph {
+func GetAllPr(golog syslog.Writer,db *sql.DB, siteid int64,site string) []domains.Paragraph {
 
 //	log.Println("GetAllPr:Start")
 
 	var paragraphsarr []domains.Paragraph
 
 	sqlstr := "select rowid,Ptitle,Pphrase,Host,Locallink from paragraphs where Siteid =" + strconv.FormatInt(siteid, 10)
-	log.Println(sqlstr)
+//	log.Println(sqlstr)
 
 	rows, err := db.Query(sqlstr)
 	if err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Crit(err.Error())
 	}
 	defer rows.Close()
 

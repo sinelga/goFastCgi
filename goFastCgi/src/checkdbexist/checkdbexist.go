@@ -4,7 +4,7 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"domains"
-	"log"
+//	"log"
 	"log/syslog"
 	"time"
 //	"strconv"
@@ -23,14 +23,14 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 	var webcontents domains.WebContents
 
-
 	now := time.Now().Unix()
 
 	sqlstr := "select rowid,Created,Updated,Hits,Locale,Themes,Title,Site,Allhits from sites where Site='" + host + "' and Pathinfo='" + pathinfo + "'"
 
 	rows, err := db.Query(sqlstr)
 	if err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Crit(err.Error())
 	}
 	defer rows.Close()
 

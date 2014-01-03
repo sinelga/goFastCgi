@@ -8,7 +8,7 @@ import (
 	"database/sql"
 	"domains"
 	"getalldbparagraphs"
-	"log"
+//	"log"
 	"log/syslog"
 	"os"
 	"sentencesforpr"
@@ -26,7 +26,8 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Err(err.Error())
 	}
 
 	webcontents := checkdbexist.Checkdb(golog, db, host, thispathinfo)
@@ -35,13 +36,13 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
-		if webcontents.Hits < 5 && deltamin > 30 {
+		if webcontents.Hits < 10 && deltamin >= 0 {
 
-			paragraphsarr = getalldbparagraphs.GetAllPr(db, webcontents.Rowid, host)
+			paragraphsarr = getalldbparagraphs.GetAllPr(golog,db, webcontents.Rowid, host)
 
 			for i, paragraph := range paragraphsarr {
 
-				paragraphsarr[i].Sentences = sentencesforpr.GetSents(db, paragraph.Rowid)
+				paragraphsarr[i].Sentences = sentencesforpr.GetSents(golog,db, paragraph.Rowid)
 			}
 
 			addfreeparagraph.AddPr(golog, db, webcontents.Rowid, webcontents.Locale, webcontents.Themes)
@@ -60,7 +61,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 		if f, err := os.Open(htmlfile); err != nil {
 
 			golog.Err(err.Error())
-			//			return
+			
 		} else {
 
 			defer f.Close()

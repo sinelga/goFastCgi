@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"domains"
 	"html/template"
-	"log"
+//	"log"
 	"log/syslog"
-	"os"
+//	"os"
+	"createfirstgz"
 )
 
 func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebContents) {
@@ -16,8 +17,9 @@ func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebConte
 		"templ/index.html",
 	))
 
-	log.Println("createpage:")
-	thishtmlfile := htmlfile 
+	thishtmlfile := htmlfile
+// 	log.Println("createpage: "+thishtmlfile)
+ 	golog.Info("CreatePg: "+thishtmlfile)
 	
 	webpage := bytes.NewBuffer(nil)
 	if err := index.Execute(webpage, webcontents); err != nil {
@@ -27,40 +29,41 @@ func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebConte
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
 
-	if f, err := os.Open(htmlfile); err != nil {
+//	if f, err := os.Open(htmlfile); err != nil {
+//
+//		golog.Err(err.Error())
+//		//			return
+//	} else {
+//
+//		defer f.Close()
+//
+//		fi, err := f.Stat()
+//		if err != nil {
+//		
+//			golog.Err(err.Error())
+//			
+//		}
+//		switch mode := fi.Mode(); {
+//
+//		case mode.IsDir():
+//
+//			golog.Warning("directory ??? fix it add index.html so result " + htmlfile+"/index.html")
+//			thishtmlfile = htmlfile+"/index.html"
+//			
+//		case mode.IsRegular():
+//
+//		}
+//
+//	}
 
-		golog.Err(err.Error())
-		//			return
-	} else {
+	createfirstgz.Creategzhtml(thishtmlfile,webpagebytes)
 
-		defer f.Close()
 
-		fi, err := f.Stat()
-		if err != nil {
-			//			fmt.Println(err)
-			golog.Err(err.Error())
-			//			return
-		}
-		switch mode := fi.Mode(); {
-
-		case mode.IsDir():
-
-			golog.Warning("directory ??? fix it add index.html so result " + htmlfile+"/index.html")
-			thishtmlfile = htmlfile+"/index.html"
-			
-		case mode.IsRegular():
-
-//			golog.Info("IsRegular so remake " + htmlfile)
-			//				os.Remove(htmlfile)
-		}
-
-	}
-
-	file, err := os.Create(thishtmlfile)
-	if err != nil {
-		panic(err)
-	}
-	file.Write(webpagebytes)
-	file.Close()
+//	file, err := os.Create(thishtmlfile)
+//	if err != nil {
+//		panic(err)
+//	}
+//	file.Write(webpagebytes)
+//	file.Close()
 
 }

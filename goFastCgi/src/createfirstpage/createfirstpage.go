@@ -5,7 +5,7 @@ import (
 	"comutils"
 	"domains"
 	"html/template"
-	"log"
+//	"log"
 	"log/syslog"
 	"math/rand"
 	"os"
@@ -32,11 +32,11 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + thispathinfo)
 
 	path := filepath.Dir(htmlfile)
-	log.Println(path)
+//	log.Println(path)
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
-		//		panic(err)
-		log.Fatal(err)
+
+		golog.Err(err.Error())
 	}
 
 //	file, err := os.Create(htmlfile)
@@ -87,7 +87,7 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Locale:     locale,
 		Themes:     themes,
 		Domain:     host,
-		Pathinfo:   thispathinfo,
+		Pathinfo:   thispathinfo+".gz",
 		Title:      title,
 		Ptitle:     paragraph.Ptitle,
 		Pphrase:    paragraph.Pphrase,

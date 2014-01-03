@@ -1,18 +1,19 @@
 package clean_pathinfo
 
 import (
-	"log"
+	"log/syslog"
 	"net/url"
 )
 
-func CleanPath(path string) string {
+func CleanPath(golog syslog.Writer,path string) string {
 
 	u, err := url.Parse(path)
 	if err != nil {
-		log.Fatal(err)
+//		log.Fatal(err)
+		golog.Err(err.Error())
 	}
 
-	log.Println("u.Path", u.Path)
+//	log.Println("u.Path", u.Path)
 
 	cleanpath := u.Path
 
