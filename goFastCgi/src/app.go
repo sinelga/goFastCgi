@@ -119,6 +119,10 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfostr string, htmlfile string) {
 
 	var bytepage []byte
+
+	if strings.HasSuffix(htmlfile,".html") || strings.HasSuffix(htmlfile,".php") ||  strings.HasSuffix(htmlfile,".jsp"){
+	
+	
 	if locale == "fi_FI" && themes == "finance" {
 		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
 	} else if locale == "fi_FI" && themes == "porno" {
@@ -132,6 +136,11 @@ func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http
 	
 	resp.Write(bytepage)
 	
+	} else {
+	
+		resp.WriteHeader(404)
+	}
+		
 	if strings.HasSuffix(htmlfile,".html") {
 	
 		go createfirstgz.Creategzhtml(htmlfile,bytepage)

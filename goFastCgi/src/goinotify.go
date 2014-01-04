@@ -26,8 +26,6 @@ func main() {
 
 	if  strings.HasSuffix(htmlfileflag,".gz")  || strings.HasSuffix(htmlfileflag,"/index.html") {
 
-		golog.Info("goinotify: " + htmlfileflag + " event " + *eventflag)
-
 		if *eventflag == "CLOSE_NOWRITE,CLOSE" {
 		
 			htmlfilesp := strings.Split(htmlfileflag, "/")
@@ -49,14 +47,10 @@ func main() {
 
 			pushinqueue.PushInQueue(*golog, "redis", locale, themes, host, pathinfo)
 
+		} else {
+		
+			golog.Info("goinotify: " + htmlfileflag + " event " + *eventflag)
 		}
-		
-//		if  strings.HasSuffix(htmlfileflag,"/index.html") {
-		
-		
-		
-		
-		
 
 	}
 
