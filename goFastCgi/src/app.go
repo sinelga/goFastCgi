@@ -11,12 +11,12 @@ import (
 	"net"
 	"net/http"
 	"net/http/fcgi"
-	"os"
-	"pushinqueue"
-	"strconv"
-	"sync"
+	//	"os"
+	//	"pushinqueue"
 	"createfirstgz"
+	"strconv"
 	"strings"
+	"sync"
 )
 
 var startOnce sync.Once
@@ -59,94 +59,89 @@ func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, 
 	defer golog.Close()
 	if err != nil {
 		log.Fatal("error writing syslog!!")
-
 	}
 
 	startOnce.Do(func() {
 		startones(*golog)
 	})
-	pathinfostr := clean_pathinfo.CleanPath(*golog,pathinfo)
+	pathinfostr := clean_pathinfo.CleanPath(*golog, pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
+	golog.Info("checkfirstpage: " + htmlfile)
 
-	if fi, err := os.Stat(htmlfile); err != nil {
+	//	if fi, err := os.Stat(htmlfile); err != nil {
+	//
+	//		if os.IsNotExist(err) {
 
-		if os.IsNotExist(err) {
+	fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
 
-			fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
+	//		} else {
+	//
+	//			golog.Err("something wrong??? "+pathinfostr+" "+ htmlfile)
+	//
+	//		}
 
-		} else {
+	//	} else {
+	//
+	//		switch mode := fi.Mode(); {
+	//
+	//		case mode.IsDir():
+	//
+	//			golog.Info("directory " + htmlfile)
+	//			//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+	//
+	//			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+	//				if os.IsNotExist(err) {
+	//
+	//					golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
+	//					fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile+"/index.html")
+	//				}
+	//			} else {
+	//
+	//
+	//			}
+	//
+	//		case mode.IsRegular():
+	//
+	//			golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
+	//
+	//		}
+	//
+	//		go pushinqueue.PushInQueue(*golog,"redis", locale, themes, host, pathinfostr)
 
-			golog.Err("something wrong??? "+pathinfostr+" "+ htmlfile)
-
-		}
-
-	} else {
-
-		switch mode := fi.Mode(); {
-
-		case mode.IsDir():
-
-			golog.Info("directory " + htmlfile)
-			//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
-
-			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-				if os.IsNotExist(err) {
-
-					golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
-					fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile+"/index.html")
-//					http.ServeFile(resp, req, htmlfile+"/index.html")
-				}
-			} else {
-//									golog.Warning("OK for " + htmlfile + "/index.html exist serve normaly")
-				//					os.Remove(htmlfile + "/index.html")
-//				http.ServeFile(resp, req, htmlfile+"/index.html")
-
-			}
-
-		case mode.IsRegular():
-
-			golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
-
-		}
-
-		//		http.ServeFile(resp, req, htmlfile)
-		go pushinqueue.PushInQueue(*golog,"redis", locale, themes, host, pathinfostr)
-
-	}
+	//	}
 }
 
 func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfostr string, htmlfile string) {
 
 	var bytepage []byte
 
-	if strings.HasSuffix(htmlfile,".html") || strings.HasSuffix(htmlfile,".php") ||  strings.HasSuffix(htmlfile,".jsp"){
-	
-	
-	if locale == "fi_FI" && themes == "finance" {
-		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
-	} else if locale == "fi_FI" && themes == "porno" {
-		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+	if strings.HasSuffix(htmlfile, ".html") || strings.HasSuffix(htmlfile, ".php") || strings.HasSuffix(htmlfile, ".jsp") {
 
-	} else if locale == "it_IT" && themes == "finance" {
-		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
-	} else if locale == "fi_FI" && themes == "fortune" {
-		bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
-	}
-	
-	resp.Write(bytepage)
-	
+		if locale == "fi_FI" && themes == "finance" {
+			bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_finance, phrasesarr_fi_FI_finance)
+		} else if locale == "fi_FI" && themes == "porno" {
+			bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_porno, phrasesarr_fi_FI_porno)
+
+		} else if locale == "it_IT" && themes == "finance" {
+			bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_it_IT_finance, phrasesarr_it_IT_finance)
+		} else if locale == "fi_FI" && themes == "fortune" {
+			bytepage = createfirstpage.CreatePage(golog, locale, themes, host, pathinfostr, keywordsarr_fi_FI_fortune, phrasesarr_fi_FI_fortune)
+		}
+
+		resp.Write(bytepage)
+
 	} else {
-	
+
 		resp.WriteHeader(404)
 	}
-		
-	if strings.HasSuffix(htmlfile,".html") {
-	
-		go createfirstgz.Creategzhtml(htmlfile,bytepage)
-	
+
+	if strings.HasSuffix(htmlfile, ".html") {
+
+		go createfirstgz.Creategzhtml(htmlfile, bytepage)
+
 	}
-	
+
 }
 
 func startones(golog syslog.Writer) {

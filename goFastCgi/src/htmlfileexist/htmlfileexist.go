@@ -10,7 +10,7 @@ import (
 	"getalldbparagraphs"
 //	"log"
 	"log/syslog"
-	"os"
+//	"os"
 	"sentencesforpr"
 	"strconv"
 //	"strings"
@@ -28,7 +28,6 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 	if err != nil {
-//		log.Fatal(err)
 		golog.Err(err.Error())
 	}
 
@@ -54,52 +53,54 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		} else {
 
-			golog.Info("Dont Update page hits > (set 5) --> " + strconv.Itoa(webcontents.Hits) + " or delatamin (set 30) to shot " + strconv.Itoa(deltamin) + " " + htmlfile)
+			golog.Info("Dont Update page hits > (set 10) --> " + strconv.Itoa(webcontents.Hits) + " or delatamin (set 0) to shot " + strconv.Itoa(deltamin) + " " + htmlfile)
 
 		}
 
 	} else {
 
-		if f, err := os.Open(htmlfile); err != nil {
 
-			golog.Err(err.Error())
-			
-		} else {
+		golog.Alert("!!!StartCheck: no record for "+htmlfile+" thispathinfo "+thispathinfo)
 
-			defer f.Close()
-
-			fi, err := f.Stat()
-			if err != nil {
-				//			fmt.Println(err)
-				golog.Err(err.Error())
-				//			return
-			}
-			switch mode := fi.Mode(); {
-
-			case mode.IsDir():
-
-				golog.Info("directory " + htmlfile)
-				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
-
-				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-					if os.IsNotExist(err) {
-
-						golog.Warning("Don't exit " + htmlfile + "/index.html not think to delete")
-					}
-				} else {
-					golog.Warning("OK delete " + htmlfile + "/index.html")
-					os.Remove(htmlfile + "/index.html")
-
-				}
-
-			case mode.IsRegular():
-
-				golog.Warning("recod don't exit must delete file " + htmlfile)
-				os.Remove(htmlfile)
-
-			}
-
-		}
+//		if f, err := os.Open(htmlfile); err != nil {
+//
+//			golog.Err(err.Error())
+//			
+//		} else {
+//
+//			defer f.Close()
+//
+//			fi, err := f.Stat()
+//			if err != nil {
+//
+//				golog.Err(err.Error())
+//			}
+//			switch mode := fi.Mode(); {
+//
+//			case mode.IsDir():
+//
+//				golog.Info("directory " + htmlfile)
+//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
+//
+//				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
+//					if os.IsNotExist(err) {
+//
+//						golog.Warning("Don't exit " + htmlfile + "/index.html not think to delete")
+//					}
+//				} else {
+//					golog.Warning("OK delete " + htmlfile + "/index.html")
+//					os.Remove(htmlfile + "/index.html")
+//
+//				}
+//
+//			case mode.IsRegular():
+//
+//				golog.Warning("recod don't exit must delete file " + htmlfile)
+//				os.Remove(htmlfile)
+//
+//			}
+//
+//		}
 
 	}
 

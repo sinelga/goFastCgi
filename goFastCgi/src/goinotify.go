@@ -47,11 +47,8 @@ func main() {
 
 			pushinqueue.PushInQueue(*golog, "redis", locale, themes, host, pathinfo)
 
-		} else {
-		
-			golog.Info("goinotify: " + htmlfileflag + " event " + *eventflag)
 		}
-
+		
 	}
 
 }
