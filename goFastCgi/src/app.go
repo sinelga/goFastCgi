@@ -50,8 +50,6 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	bot := req.Header.Get("X-BOT")
 	rootdir :=req.Header.Get("X-ROOTDIR")
 
-//	log.Println("Bot ", bot)
-
 	if bot == "1" {
 		checkfirstpage(*golog, resp, req, locale, themes, host, pathinfo)
 	} else if bot == "0" {
