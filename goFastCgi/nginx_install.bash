@@ -34,4 +34,4 @@ adduser --system --no-create-home --disabled-login --disabled-password --group n
 
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --add-module=../echo --add-module=../redis2-nginx-module
 
-./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module"
+./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module

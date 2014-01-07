@@ -14,6 +14,7 @@ import (
 	//	"os"
 	//	"pushinqueue"
 	"createfirstgz"
+	"jswebserv"
 	"strconv"
 	"strings"
 	"sync"
@@ -28,17 +29,35 @@ var keywordsarr_it_IT_finance []string
 var phrasesarr_it_IT_finance []string
 var keywordsarr_fi_FI_fortune []string
 var phrasesarr_fi_FI_fortune []string
+var bot string
+var rootdir string
 
 type FastCGIServer struct{}
 
 func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 
+	golog, err := syslog.New(syslog.LOG_ERR, "golog")
+
+	defer golog.Close()
+	if err != nil {
+		log.Fatal("error writing syslog!!")
+	}
+
 	themes := req.Header.Get("X-THEMES")
 	locale := req.Header.Get("X-LOCALE")
 	host := req.Header.Get("X-DOMAIN")
 	pathinfo := req.Header.Get("X-PATHINFO")
+	bot := req.Header.Get("X-BOT")
+	rootdir :=req.Header.Get("X-ROOTDIR")
 
-	checkfirstpage(resp, req, locale, themes, host, pathinfo)
+//	log.Println("Bot ", bot)
+
+	if bot == "1" {
+		checkfirstpage(*golog, resp, req, locale, themes, host, pathinfo)
+	} else if bot == "0" {
+
+		jswebserv.JsServ(*golog, resp, req,rootdir)
+	}
 
 }
 
@@ -52,64 +71,18 @@ func main() {
 	fcgi.Serve(listener, srv)
 }
 
-func checkfirstpage(resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
-
-	golog, err := syslog.New(syslog.LOG_ERR, "golog")
-
-	defer golog.Close()
-	if err != nil {
-		log.Fatal("error writing syslog!!")
-	}
+func checkfirstpage(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfo string) {
 
 	startOnce.Do(func() {
-		startones(*golog)
+		startones(golog)
 	})
-	pathinfostr := clean_pathinfo.CleanPath(*golog, pathinfo)
+	pathinfostr := clean_pathinfo.CleanPath(golog, pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
 	golog.Info("checkfirstpage: " + htmlfile)
 
-	//	if fi, err := os.Stat(htmlfile); err != nil {
-	//
-	//		if os.IsNotExist(err) {
+	fileNotExistCreate(golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
 
-	fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
-
-	//		} else {
-	//
-	//			golog.Err("something wrong??? "+pathinfostr+" "+ htmlfile)
-	//
-	//		}
-
-	//	} else {
-	//
-	//		switch mode := fi.Mode(); {
-	//
-	//		case mode.IsDir():
-	//
-	//			golog.Info("directory " + htmlfile)
-	//			//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
-	//
-	//			if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-	//				if os.IsNotExist(err) {
-	//
-	//					golog.Warning("Don't exit " + htmlfile + "/index.html so create new")
-	//					fileNotExistCreate(*golog, resp, req, locale, themes, host, pathinfostr, htmlfile+"/index.html")
-	//				}
-	//			} else {
-	//
-	//
-	//			}
-	//
-	//		case mode.IsRegular():
-	//
-	//			golog.Warning("app: IsRegular file" + htmlfile +" OK static serveFile")
-	//
-	//		}
-	//
-	//		go pushinqueue.PushInQueue(*golog,"redis", locale, themes, host, pathinfostr)
-
-	//	}
 }
 
 func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http.Request, locale string, themes string, host string, pathinfostr string, htmlfile string) {

@@ -2,6 +2,11 @@ apt-get autoremove
 apt-get clean
 apt-get autoclean
 
+ echo 524288 > /proc/sys/fs/inotify/max_user_watches
+  vi /etc/sysctl.conf
+  fs.inotify.max_user_watches=524288
+  sysctl -p
+
 
 bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
 bin/cleanupspace -hits=20 -created=20
