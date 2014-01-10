@@ -39,11 +39,6 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		golog.Err(err.Error())
 	}
 
-//	file, err := os.Create(htmlfile)
-//	if err != nil {
-//		//		panic(err)
-//		log.Fatal(err)
-//	}
 
 	ext := string(".html")
 
@@ -113,8 +108,6 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	webpage := bytes.NewBuffer(nil)
 
 	if err := index.Execute(webpage, webinfo); err != nil {
-
-//		panic(err)
 		golog.Err(err.Error())
 	}
 	webpagebytes := make([]byte, webpage.Len())

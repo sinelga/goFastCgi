@@ -34,34 +34,6 @@ func Creategzhtml(htmlfile string, webpagebytes []byte) {
 	} 
 
 
-//	htmlfilesp := strings.Split(htmlfile, "/")
-//
-//	lastsplit := htmlfilesp[len(htmlfilesp)-1]
-//
-//	golog.Info("lastsplit " + lastsplit)
-//
-//	var _htmlfile string
-//	if strings.HasSuffix(htmlfile, ".gz") {
-//
-//		_htmlfile = htmlfile
-//
-//	} else if strings.Index(lastsplit, ".") > 0 && lastsplit != "index.html" {
-//		_htmlfile = htmlfile + ".gz"
-//
-//	} else if lastsplit == "index.html" {
-//
-//		index = true
-//		_htmlfile = htmlfile
-//
-//	} else {
-//
-//		_htmlfile = htmlfile + "/index.html"
-//		golog.Info("CreateIndex: " + _htmlfile)
-//
-//		index = true
-//
-//	}
-
 	if !index {
 		golog.Info("Creategzhtml: gz file " + _htmlfile)
 		

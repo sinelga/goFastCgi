@@ -42,7 +42,7 @@ func main() {
 				golog.Crit(err.Error())
 
 			}
-			makenewsite.Makenew(unmar)
+			makenewsite.Makenew(*golog,unmar)
 
 		}
 

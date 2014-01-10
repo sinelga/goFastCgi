@@ -4,7 +4,8 @@ apt-get autoclean
 
  echo 524288 > /proc/sys/fs/inotify/max_user_watches
   vi /etc/sysctl.conf
-  fs.inotify.max_user_watches=524288
+  #fs.inotify.max_user_watches=524288
+  fs.inotify.max_user_watches=1000000
   sysctl -p
 
 
