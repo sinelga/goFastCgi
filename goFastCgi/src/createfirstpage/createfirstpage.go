@@ -5,22 +5,20 @@ import (
 	"comutils"
 	"domains"
 	"html/template"
-//	"log"
+	//	"log"
+	"checkpathinfo"
 	"log/syslog"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"queue/findfreeparagraph"
 	"queue/makenewsite"
-	"checkpathinfo"
-//	"strings"
+	"strings"
 	"time"
 	"titlegen"
-//	"compress/gzip"
-//	"io/ioutil"
 )
 
-func CreatePage(golog syslog.Writer, locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) []byte{
+func CreatePage(golog syslog.Writer, locale string, themes string, host string, pathinfo string, keywords []string, phrases []string) []byte {
 
 	var index = template.Must(template.ParseFiles(
 		"templ/_base_first.html",
@@ -32,20 +30,19 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + thispathinfo)
 
 	path := filepath.Dir(htmlfile)
-//	log.Println(path)
+
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
 
 		golog.Err(err.Error())
 	}
 
-
 	ext := string(".html")
 
 	paragraph, newdomain := findfreeparagraph.FindFromQ(locale, themes)
 
 	if newdomain != "" {
-		//		log.Println("new domain", newdomain)
+
 		golog.Info("new domain " + newdomain)
 	}
 
@@ -82,7 +79,6 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Locale:     locale,
 		Themes:     themes,
 		Domain:     host,
-//		Pathinfo:   thispathinfo+".gz",
 		Pathinfo:   thispathinfo,
 		Title:      title,
 		Ptitle:     paragraph.Ptitle,
@@ -92,8 +88,13 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Sentences:  paragraph.Sentences,
 	}
 
-	go makenewsite.MakeNewByQ(firstPage)
+	golog.Info("createfirstpage:CreatePage path ->" + thispathinfo)
 
+	if strings.HasSuffix(thispathinfo, "index.html") || strings.HasSuffix(thispathinfo, ".gz") {
+
+		go makenewsite.MakeNewByQ(firstPage)
+
+	}
 	webinfo := domains.WebInfo{
 		Site:       host,
 		Ext:        ext,
@@ -112,9 +113,7 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	}
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
-	
 
-return webpagebytes
+	return webpagebytes
 
-	
 }

@@ -18,8 +18,8 @@ func CheckMulti(golog syslog.Writer, db *sql.DB, locale string, themes string, s
 		golog.Crit(err.Error())
 	}
 	defer rows.Close()
-	var recordsQuant int
-	recordsQuant = 0
+//	var recordsQuant int
+	recordsQuant := int(0)
 
 	for rows.Next() {
 

@@ -21,11 +21,6 @@ func MakeNewByQ(firstpage  domains.FirstPage) {
 		log.Fatal(err)
 
 	} 
-//	else {
-//
-//		log.Println("in queue ",queuename, pgq)
-//
-//	}
 
 	c.Flush()
 	c.Close()
