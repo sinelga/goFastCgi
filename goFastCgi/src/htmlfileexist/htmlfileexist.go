@@ -8,12 +8,12 @@ import (
 	"database/sql"
 	"domains"
 	"getalldbparagraphs"
-//	"log"
+
 	"log/syslog"
-//	"os"
+
 	"sentencesforpr"
 	"strconv"
-//	"strings"
+
 	"time"
 	"checkpathinfo"
 )
@@ -62,45 +62,6 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		golog.Alert("!!!StartCheck: no record for "+htmlfile+" thispathinfo "+thispathinfo)
 
-//		if f, err := os.Open(htmlfile); err != nil {
-//
-//			golog.Err(err.Error())
-//			
-//		} else {
-//
-//			defer f.Close()
-//
-//			fi, err := f.Stat()
-//			if err != nil {
-//
-//				golog.Err(err.Error())
-//			}
-//			switch mode := fi.Mode(); {
-//
-//			case mode.IsDir():
-//
-//				golog.Info("directory " + htmlfile)
-//				golog.Warning("try delete index.html file " + htmlfile + "/index.html")
-//
-//				if _, err := os.Stat(htmlfile + "/index.html"); err != nil {
-//					if os.IsNotExist(err) {
-//
-//						golog.Warning("Don't exit " + htmlfile + "/index.html not think to delete")
-//					}
-//				} else {
-//					golog.Warning("OK delete " + htmlfile + "/index.html")
-//					os.Remove(htmlfile + "/index.html")
-//
-//				}
-//
-//			case mode.IsRegular():
-//
-//				golog.Warning("recod don't exit must delete file " + htmlfile)
-//				os.Remove(htmlfile)
-//
-//			}
-//
-//		}
 
 	}
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/garyburd/redigo/redis"
 	"htmlfileexist"
+	"io/ioutil"
 	"log"
 	"log/syslog"
 	"makenewsite"
@@ -22,8 +23,40 @@ func main() {
 
 	c, err := redis.Dial("tcp", ":6379")
 	if err != nil {
-		//		log.Fatal(err)
+
 		golog.Crit(err.Error())
+	}
+
+	if qfirstpagesbin, err := redis.Strings(c.Do("HKEYS", "firstpagebin")); err != nil {
+		golog.Crit(err.Error())
+	} else {
+
+		for _, keystr := range qfirstpagesbin {
+
+			golog.Info("Create page: " + keystr)
+
+			if webpagebytes, err := redis.Bytes(c.Do("HGET", "firstpagebin", keystr)); err != nil {
+
+				golog.Crit(err.Error())
+
+			} else {
+
+				if err := ioutil.WriteFile(keystr, webpagebytes, 0666); err != nil {
+					golog.Crit(err.Error())
+				} else {
+
+					if _, err := redis.Int(c.Do("HDEL", "firstpagebin", keystr)); err != nil {
+
+						golog.Crit(err.Error())
+
+					}
+
+				}
+
+			}
+
+		}
+
 	}
 
 	if qfirstpages, err := redis.Int(c.Do("SCARD", "firstpage")); err != nil {
@@ -38,11 +71,11 @@ func main() {
 			var unmar domains.FirstPage
 			err := json.Unmarshal(bfirstpage, &unmar)
 			if err != nil {
-//				log.Fatal(err)
+				//				log.Fatal(err)
 				golog.Crit(err.Error())
 
 			}
-			makenewsite.Makenew(*golog,unmar)
+			makenewsite.Makenew(*golog, unmar)
 
 		}
 

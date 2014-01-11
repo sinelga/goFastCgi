@@ -107,7 +107,7 @@ func fileNotExistCreate(golog syslog.Writer, resp http.ResponseWriter, req *http
 
 	if strings.HasSuffix(htmlfile, ".html") {
 
-		go createfirstgz.Creategzhtml(htmlfile, bytepage)
+		go createfirstgz.Creategzhtml(true,htmlfile, bytepage)
 
 	}
 

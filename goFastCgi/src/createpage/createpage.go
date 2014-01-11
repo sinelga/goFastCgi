@@ -29,41 +29,8 @@ func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebConte
 	webpagebytes := make([]byte, webpage.Len())
 	webpagebytes = webpage.Bytes()
 
-//	if f, err := os.Open(htmlfile); err != nil {
-//
-//		golog.Err(err.Error())
-//		//			return
-//	} else {
-//
-//		defer f.Close()
-//
-//		fi, err := f.Stat()
-//		if err != nil {
-//		
-//			golog.Err(err.Error())
-//			
-//		}
-//		switch mode := fi.Mode(); {
-//
-//		case mode.IsDir():
-//
-//			golog.Warning("directory ??? fix it add index.html so result " + htmlfile+"/index.html")
-//			thishtmlfile = htmlfile+"/index.html"
-//			
-//		case mode.IsRegular():
-//
-//		}
-//
-//	}
 
-	createfirstgz.Creategzhtml(thishtmlfile,webpagebytes)
+	createfirstgz.Creategzhtml(false,thishtmlfile,webpagebytes)
 
-
-//	file, err := os.Create(thishtmlfile)
-//	if err != nil {
-//		panic(err)
-//	}
-//	file.Write(webpagebytes)
-//	file.Close()
 
 }
