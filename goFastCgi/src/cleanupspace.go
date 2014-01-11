@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"flag"
 	"log"
+	"log/syslog"
 	"os"
 	"strconv"
 )
@@ -19,14 +20,21 @@ type Site struct {
 }
 
 var hitsflag = flag.Int("hits", 0, "hits must be >= 0 normal 10 and more")
-var createdflag =  flag.Int("created", 0, "created in days ago mast must be > 0 normal 20-30 and more")
+var createdflag = flag.Int("created", 0, "created in days ago mast must be > 0 normal 20-30 and more")
 
 func main() {
 
+	golog, err := syslog.New(syslog.LOG_ERR, "golog")
+
+	defer golog.Close()
+	if err != nil {
+		log.Fatal("error writing syslog!!")
+	}
+
 	flag.Parse()
 
-	if *hitsflag >= 0 &&  *createdflag > 0 {
-		
+	if *hitsflag >= 0 && *createdflag > 0 {
+
 		var sitearr []Site
 
 		db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
@@ -34,10 +42,12 @@ func main() {
 			log.Fatal(err)
 		}
 		defer db.Close()
-		
-		seccreated := *createdflag*24*60*60 
-		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >="+ strconv.Itoa(*hitsflag)+" or Created < (strftime('%s','now') -"+ strconv.Itoa(seccreated)+")"
-		log.Println(sqlstr)
+
+		seccreated := *createdflag * 24 * 60 * 60
+//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
+		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits <" + strconv.Itoa(*hitsflag) + " and Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
+		//		log.Println(sqlstr)
+		golog.Info(sqlstr)
 
 		rows, err := db.Query(sqlstr)
 		if err != nil {
@@ -68,8 +78,8 @@ func main() {
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
 					if os.IsNotExist(err) {
-//						log.Fatall("file does not exist??? Cant be!!! but delete record from DB anyway")
-						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!! id ->",site.Id)
+						//						log.Fatall("file does not exist??? Cant be!!! but delete record from DB anyway")
+						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!! id ->", site.Id)
 						cleandb.Makeclean(db, site.Id)
 
 					}

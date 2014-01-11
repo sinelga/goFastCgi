@@ -35,7 +35,7 @@ func Creategzhtml(htmlfile string, webpagebytes []byte) {
 
 
 	if !index {
-		golog.Info("Creategzhtml: gz file " + _htmlfile)
+//		golog.Info("Creategzhtml: gz file " + _htmlfile)
 		
 		var b bytes.Buffer
 
@@ -48,7 +48,7 @@ func Creategzhtml(htmlfile string, webpagebytes []byte) {
 		}
 	} else {
          
-         golog.Info("Creategzhtml: index.html " + _htmlfile)
+//         golog.Info("Creategzhtml: index.html " + _htmlfile)
 		
 		if err := ioutil.WriteFile(_htmlfile, webpagebytes, 0666); err != nil {
 			golog.Crit(err.Error())

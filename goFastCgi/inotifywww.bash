@@ -1,10 +1,10 @@
 #!/bin/bash                               
  
-inotifywait -m -q -r  "www/" --format "-htmlfile=%w%f -event=%e" --excludei '\.(jpg|png|gif|ico|log|sql|pdf|php|swf|ttf|eot|woff|)$' |
+inotifywait -m -q -e CLOSE_NOWRITE,CLOSE -r  "www/" --format "-htmlfile=%w%f -event=%e" --excludei '\.(jpg|png|gif|ico|log|sql|pdf|php|swf|ttf|eot|woff|)$' |
 	while read file
 	do
 
-		echo $file
+#		echo $file
 		bin/goinotify $file 
 #		if [[ $file =~ \.(gz)$ ]];
 #		then
