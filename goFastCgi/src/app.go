@@ -75,7 +75,7 @@ func checkfirstpage(golog syslog.Writer, resp http.ResponseWriter, req *http.Req
 	pathinfostr := clean_pathinfo.CleanPath(golog, pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-	golog.Info("checkfirstpage: " + htmlfile)
+//	golog.Info("checkfirstpage: " + htmlfile)
 
 	fileNotExistCreate(golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
 

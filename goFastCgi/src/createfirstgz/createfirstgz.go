@@ -40,7 +40,7 @@ func Creategzhtml(byqueue bool, htmlfile string, webpagebytes []byte) {
 
 	_htmlfile := checkpathinfo.Check(htmlfile)
 
-	golog.Info("Creategzhtml: thispathinfo " + _htmlfile)
+//	golog.Info("Creategzhtml: thispathinfo " + _htmlfile)
 
 	if strings.HasSuffix(_htmlfile, "/index.html") {
 
