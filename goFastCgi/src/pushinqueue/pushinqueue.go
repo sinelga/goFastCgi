@@ -6,7 +6,7 @@ import (
 	"log/syslog"
 	"domains"
 	"encoding/json"
-	"strconv"
+//	"strconv"
 
 )
 
@@ -27,19 +27,17 @@ func PushInQueue(golog syslog.Writer,queuesys string,locale string,themes string
 	}
 	bsite, _ := json.Marshal(site)
 
-	if pgq, err := c.Do("SADD", "pagetocreate", bsite); err != nil {
-	
-//		log.Fatal(err)
+	if _, err := c.Do("SADD", "pagetocreate", bsite); err != nil {
 		golog.Err(err.Error())
 
-	} else {
-	
-//		log.Println("in queue ",pgq)
-		pgqint64 := pgq.(int64)
-		pgqint := int(pgqint64) 
-		golog.Info("pushinqueue: in queue pagetocreate "+ strconv.Itoa(pgqint))
-	
 	}
+//	 else {
+
+//		pgqint64 := pgq.(int64)
+//		pgqint := int(pgqint64) 
+//		golog.Info("pushinqueue: in queue pagetocreate "+ strconv.Itoa(pgqint))
+	
+//	}
 	c.Flush()
 	c.Close()
 }
