@@ -109,6 +109,7 @@ func main() {
 
 	}
 
+	golog.Info("elabque: END pagetocreate")
 	c.Flush()
 	c.Close()
 

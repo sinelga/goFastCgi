@@ -88,8 +88,6 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 		Sentences:  paragraph.Sentences,
 	}
 
-//	golog.Info("createfirstpage:CreatePage path ->" + thispathinfo)
-
 	if strings.HasSuffix(thispathinfo, "index.html") || strings.HasSuffix(thispathinfo, ".gz") {
 
 		go makenewsite.MakeNewByQ(firstPage)
