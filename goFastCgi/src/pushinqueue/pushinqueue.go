@@ -31,13 +31,6 @@ func PushInQueue(golog syslog.Writer,queuesys string,locale string,themes string
 		golog.Err(err.Error())
 
 	}
-//	 else {
-
-//		pgqint64 := pgq.(int64)
-//		pgqint := int(pgqint64) 
-//		golog.Info("pushinqueue: in queue pagetocreate "+ strconv.Itoa(pgqint))
-	
-//	}
 	c.Flush()
 	c.Close()
 }

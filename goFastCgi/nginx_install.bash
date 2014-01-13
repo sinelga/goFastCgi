@@ -24,6 +24,10 @@ git clone https://github.com/agentzh/redis2-nginx-module.git
 
 apt-get install inotify-tools 
 
+apt-get install libgd2-noxpm
+apt-get install libgd2-noxpm-dev # for mage_filter_module
+  
+
 
 cp -a nginx/  nginxlast
 
@@ -35,3 +39,5 @@ adduser --system --no-create-home --disabled-login --disabled-password --group n
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --add-module=../echo --add-module=../redis2-nginx-module
 
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module
+
+./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module --with-http_image_filter_module 
