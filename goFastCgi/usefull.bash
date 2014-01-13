@@ -9,6 +9,9 @@ apt-get autoclean
   sysctl -p
 
 
+create index siteinx on sites(Site);
+create index pathinfoinx on sites(Pathinfo);
+
 bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
 bin/cleanupspace -hits=20 -created=20
 

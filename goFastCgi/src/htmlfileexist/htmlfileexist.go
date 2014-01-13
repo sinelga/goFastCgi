@@ -37,7 +37,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		deltamin := int(time.Since(webcontents.Updated).Minutes())
 
-		if webcontents.Hits < 5 && deltamin >= 0 {
+		if webcontents.Hits < 10 && deltamin >= 0 {
 
 			paragraphsarr = getalldbparagraphs.GetAllPr(golog,db, webcontents.Rowid, host)
 
@@ -53,7 +53,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 		} else {
 
-			golog.Info("Dont Update page hits > (set 5) --> " + strconv.Itoa(webcontents.Hits) + " or delatamin (set 0) to shot " + strconv.Itoa(deltamin) + " " + htmlfile)
+			golog.Info("Dont Update page hits > (set 10) --> " + strconv.Itoa(webcontents.Hits) + " or delatamin (set 0) to shot " + strconv.Itoa(deltamin) + " " + htmlfile)
 
 		}
 
