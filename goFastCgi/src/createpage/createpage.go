@@ -19,7 +19,7 @@ func CreatePg(golog syslog.Writer, htmlfile string, webcontents domains.WebConte
 
 	thishtmlfile := htmlfile
 // 	log.Println("createpage: "+thishtmlfile)
- 	golog.Info("CreatePg: "+thishtmlfile)
+// 	golog.Info("CreatePg: "+thishtmlfile)
 	
 	webpage := bytes.NewBuffer(nil)
 	if err := index.Execute(webpage, webcontents); err != nil {
