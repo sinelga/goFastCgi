@@ -27,6 +27,8 @@ func main() {
 		golog.Crit(err.Error())
 	}
 
+
+	golog.Info("elabque: Start firstpagebin")
 	if qfirstpagesbin, err := redis.Strings(c.Do("HKEYS", "firstpagebin")); err != nil {
 		golog.Crit(err.Error())
 	} else {
@@ -59,6 +61,7 @@ func main() {
 
 	}
 
+	golog.Info("elabque: Start firstpage")
 	if qfirstpages, err := redis.Int(c.Do("SCARD", "firstpage")); err != nil {
 		//		log.Fatal(err)
 		golog.Crit(err.Error())
@@ -81,6 +84,7 @@ func main() {
 
 	}
 
+	golog.Info("elabque: Start firstpage")
 	if qpages, err := redis.Int(c.Do("SCARD", "pagetocreate")); err != nil {
 		log.Fatal(err)
 
