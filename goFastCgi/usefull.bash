@@ -23,7 +23,10 @@ create index pathinfoinx on sites(Pathinfo);
 bin/newdomain -locale=fi_FI -themes=porno -domain=test.com -expire=600
 bin/cleanupspace -hits=20 -created=20
 
-git gc --aggressive --prune=now
+rm -rf .git/refs/original/ ???  maybe not
+git reflog expire --expire=now --all
+git gc --prune=now     !!! very consuming
+git gc --aggressive --prune=now  !!! very consuming
 
 select count() from paragraphs where Siteid is null;
 
