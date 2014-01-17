@@ -4,10 +4,18 @@ apt-get autoclean
 
  echo 524288 > /proc/sys/fs/inotify/max_user_watches
   vi /etc/sysctl.conf
-  #fs.inotify.max_user_watches=524288
-  fs.inotify.max_user_watches=1000000
+  fs.inotify.max_user_watches=1200000
+  vm.overcommit_memory = 1
   sysctl -p
+  
+redis.conf  
+#save 900 1
+#save 300 10
+#save 60 10000
+save ""
 
+
+find cache -type f -delete
 
 create index siteinx on sites(Site);
 create index pathinfoinx on sites(Pathinfo);
