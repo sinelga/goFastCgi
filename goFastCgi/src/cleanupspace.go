@@ -39,19 +39,21 @@ func main() {
 
 		db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 		if err != nil {
-			log.Fatal(err)
+//			log.Fatal(err)
+			golog.Err(err.Error())
 		}
 		defer db.Close()
 
 		seccreated := *createdflag * 24 * 60 * 60
-//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
+		//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits <" + strconv.Itoa(*hitsflag) + " and Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		//		log.Println(sqlstr)
 		golog.Info(sqlstr)
 
 		rows, err := db.Query(sqlstr)
 		if err != nil {
-			log.Fatal(err)
+//			log.Fatal(err)
+			golog.Err(err.Error())
 		}
 		defer rows.Close()
 
@@ -61,6 +63,27 @@ func main() {
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo)
 
 			sitearr = append(sitearr, site)
+
+		}
+		rows.Close()
+
+		sqlstr = "SELECT  rowid,Locale,Themes,Site,Pathinfo FROM sites group by Site,Pathinfo"
+
+		rows, err = db.Query(sqlstr)
+		
+		if err != nil {
+//			log.Fatal(err)
+			golog.Err(err.Error())
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			var site Site
+
+			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo)
+			
+			golog.Info("Bad -->"+site.Site+site.Pathinfo)
+//			sitearr = append(sitearr, site)
 
 		}
 		rows.Close()
