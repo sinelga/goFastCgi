@@ -45,6 +45,7 @@ func main() {
 		defer db.Close()
 
 		seccreated := *createdflag * 24 * 60 * 60
+		
 		//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits <" + strconv.Itoa(*hitsflag) + " and Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		//		log.Println(sqlstr)
@@ -85,9 +86,10 @@ func main() {
 			
 			if count > 1 {
 				golog.Info("!!!Bad delete all -->"+site.Site+site.Pathinfo)
+				sitearr = append(sitearr, site)
 			
 			}
-			sitearr = append(sitearr, site)
+			
 
 		}
 		rows.Close()
