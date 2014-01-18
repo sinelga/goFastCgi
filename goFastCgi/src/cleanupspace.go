@@ -21,6 +21,7 @@ type Site struct {
 
 var hitsflag = flag.Int("hits", 0, "hits must be >= 0 normal 10 and more")
 var createdflag = flag.Int("created", 0, "created in days ago mast must be > 0 normal 20-30 and more")
+var deepflag = flag.Int("deep", 0, "param to make deep clean if 0 nothing will be done")
 
 func main() {
 
@@ -39,7 +40,6 @@ func main() {
 
 		db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 		if err != nil {
-//			log.Fatal(err)
 			golog.Err(err.Error())
 		}
 		defer db.Close()
@@ -49,11 +49,12 @@ func main() {
 		//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits <" + strconv.Itoa(*hitsflag) + " and Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 		//		log.Println(sqlstr)
-		golog.Info(sqlstr)
+		golog.Info("cleanupspace: "+sqlstr)
+
 
 		rows, err := db.Query(sqlstr)
 		if err != nil {
-//			log.Fatal(err)
+
 			golog.Err(err.Error())
 		}
 		defer rows.Close()
@@ -68,6 +69,10 @@ func main() {
 		}
 		rows.Close()
 
+
+		if *deepflag > 0 { 
+
+		golog.Info("cleanupspace: deep clean ") 
 		sqlstr = "SELECT rowid,Locale,Themes,Site,Pathinfo,count(*) FROM sites group by Site,Pathinfo"
 
 		rows, err = db.Query(sqlstr)
@@ -85,7 +90,7 @@ func main() {
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo,&count)
 			
 			if count > 1 {
-				golog.Info("!!!Bad delete all -->"+site.Site+site.Pathinfo + " count "+strconv.Itoa(count))
+				golog.Info("cleanupspace:!!!Bad delete all -->"+site.Site+site.Pathinfo + " count "+strconv.Itoa(count))
 				sitearr = append(sitearr, site)
 			
 			}
@@ -93,6 +98,12 @@ func main() {
 
 		}
 		rows.Close()
+		
+		} else {
+		
+			golog.Info("cleanupspace:NOT deep clean ")
+		
+		}
 
 		if len(sitearr) > 0 {
 
@@ -143,4 +154,6 @@ func main() {
 		log.Fatalln("check params try -h")
 
 	}
+	golog.Info("cleanupspace: END cleanupspace ")
+	
 }
