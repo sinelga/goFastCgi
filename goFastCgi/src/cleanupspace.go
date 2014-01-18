@@ -85,7 +85,7 @@ func main() {
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo,&count)
 			
 			if count > 1 {
-				golog.Info("!!!Bad delete all -->"+site.Site+site.Pathinfo)
+				golog.Info("!!!Bad delete all -->"+site.Site+site.Pathinfo + "count "+strconv.Itoa(count))
 				sitearr = append(sitearr, site)
 			
 			}
