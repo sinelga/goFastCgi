@@ -67,7 +67,7 @@ func main() {
 		}
 		rows.Close()
 
-		sqlstr = "SELECT  rowid,Locale,Themes,Site,Pathinfo FROM sites group by Site,Pathinfo"
+		sqlstr = "SELECT rowid,Locale,Themes,Site,Pathinfo,count(*) FROM sites group by Site,Pathinfo"
 
 		rows, err = db.Query(sqlstr)
 		
@@ -79,10 +79,14 @@ func main() {
 
 		for rows.Next() {
 			var site Site
+			var count int
 
-			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo)
+			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo,&count)
 			
-			golog.Info("Bad -->"+site.Site+site.Pathinfo)
+			if count > 1 {
+				golog.Info("Bad -->"+site.Site+site.Pathinfo)
+			
+			}
 //			sitearr = append(sitearr, site)
 
 		}
