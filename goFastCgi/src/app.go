@@ -52,7 +52,7 @@ func (s FastCGIServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		checkfirstpage(*golog, resp, req, locale, themes, host, pathinfo)
 	} else if bot == "0" {
 
-		jswebserv.JsServ(*golog, resp, req,rootdir)
+		jswebserv.JsServ(*golog, resp, req,rootdir,host)
 	}
 
 }
@@ -75,7 +75,6 @@ func checkfirstpage(golog syslog.Writer, resp http.ResponseWriter, req *http.Req
 	pathinfostr := clean_pathinfo.CleanPath(golog, pathinfo)
 
 	htmlfile := string("www/" + locale + "/" + themes + "/" + host + pathinfostr)
-//	golog.Info("checkfirstpage: " + htmlfile)
 
 	fileNotExistCreate(golog, resp, req, locale, themes, host, pathinfostr, htmlfile)
 
@@ -182,7 +181,6 @@ func startones(golog syslog.Writer) {
 		} else if locale == "fi_FI" && themes == "fortune" {
 			phrasesarr_fi_FI_fortune = append(phrasesarr_fi_FI_fortune, phrase)
 		}
-
 	}
 	rows.Close()
 

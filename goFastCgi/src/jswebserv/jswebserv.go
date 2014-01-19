@@ -7,7 +7,7 @@ import (
 "strings"
 )
 
-func JsServ(golog syslog.Writer,w http.ResponseWriter, r *http.Request,rootdir string){
+func JsServ(golog syslog.Writer,w http.ResponseWriter, r *http.Request,rootdir string,host string){
 
 	pathstr := r.URL.Path
 	useragent :=r.UserAgent()
@@ -33,7 +33,7 @@ func JsServ(golog syslog.Writer,w http.ResponseWriter, r *http.Request,rootdir s
 
 		http.ServeFile(w, r, rootdir+pathstr)
 	} else {
-		golog.Info("JsServ: "+pathstr+" "+useragent)
+		golog.Info("JsServ: "+host+pathstr+" "+useragent)
 //		golog.Info(useragent)
 		http.ServeFile(w, r, rootdir+"dartapp.html")
 
