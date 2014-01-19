@@ -11,7 +11,6 @@ func JsServ(golog syslog.Writer, w http.ResponseWriter, r *http.Request, rootdir
 	pathstr := r.URL.Path
 	useragent := r.UserAgent()
 	referer := r.Referer()
-	//	golog.Info("Start JS  pathstr "+pathstr)
 
 	if strings.HasSuffix(pathstr, ".js") || strings.HasSuffix(pathstr, ".css") {
 
@@ -34,7 +33,7 @@ func JsServ(golog syslog.Writer, w http.ResponseWriter, r *http.Request, rootdir
 		http.ServeFile(w, r, rootdir+pathstr)
 	} else {
 		golog.Info("JsServ: " + host + pathstr + " " + useragent)
-		if referer != "" {
+		if referer != "" && "http://"+host + pathstr != referer {
 			golog.Info("Referer: " + referer)
 		}
 		http.ServeFile(w, r, rootdir+"dartapp.html")
