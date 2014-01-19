@@ -10,7 +10,8 @@ import (
 func JsServ(golog syslog.Writer,w http.ResponseWriter, r *http.Request,rootdir string){
 
 	pathstr := r.URL.Path
-	golog.Info("Start JS  pathstr "+pathstr)
+	useragent :=r.UserAgent()
+//	golog.Info("Start JS  pathstr "+pathstr)
 	
 	if strings.HasSuffix(pathstr, ".js") || strings.HasSuffix(pathstr, ".css") {
 
@@ -32,6 +33,8 @@ func JsServ(golog syslog.Writer,w http.ResponseWriter, r *http.Request,rootdir s
 
 		http.ServeFile(w, r, rootdir+pathstr)
 	} else {
+		golog.Info("JsServ: "+pathstr+" "+useragent)
+//		golog.Info(useragent)
 		http.ServeFile(w, r, rootdir+"dartapp.html")
 
 	}
