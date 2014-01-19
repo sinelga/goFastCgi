@@ -34,7 +34,7 @@ func JsServ(golog syslog.Writer, w http.ResponseWriter, r *http.Request, rootdir
 	} else {
 		golog.Info("JsServ: " + host + pathstr + " " + useragent)
 		urlstr := host + pathstr
-		if referer != "" &&  !strings.HasSuffix(referer,urlstr) {
+		if referer != "" &&  !strings.Contains(referer,urlstr) {
 			golog.Info("Referer: " + referer)
 		}
 		http.ServeFile(w, r, rootdir+"dartapp.html")
