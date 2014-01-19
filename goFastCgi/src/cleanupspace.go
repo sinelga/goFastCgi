@@ -72,13 +72,12 @@ func main() {
 
 		if *deepflag > 0 { 
 
-		golog.Info("cleanupspace: deep clean ") 
+		golog.Info("cleanupspace: deep clean ") //may be add deep to request
 		sqlstr = "SELECT rowid,Locale,Themes,Site,Pathinfo,count(*) FROM sites group by Site,Pathinfo"
 
 		rows, err = db.Query(sqlstr)
 		
 		if err != nil {
-//			log.Fatal(err)
 			golog.Err(err.Error())
 		}
 		defer rows.Close()
@@ -94,8 +93,6 @@ func main() {
 				sitearr = append(sitearr, site)
 			
 			}
-			
-
 		}
 		rows.Close()
 		

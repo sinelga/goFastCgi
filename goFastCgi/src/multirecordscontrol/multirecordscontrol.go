@@ -10,21 +10,17 @@ func CheckMulti(golog syslog.Writer, db *sql.DB, locale string, themes string, s
 
 	sqlstr := "select rowid,Created,Updated,Hits,Locale,Themes,Title,Site,Allhits from sites where Locale='" + locale + "' and Themes='" + themes + "' and Site='" + site + "' and Pathinfo='" + pathinfo + "'"
 
-//	golog.Info("CheckMulti: " + sqlstr)
-
 	rows, err := db.Query(sqlstr)
 	if err != nil {
 
 		golog.Crit(err.Error())
 	}
 	defer rows.Close()
-//	var recordsQuant int
+
 	recordsQuant := int(0)
 
 	for rows.Next() {
-
 		recordsQuant = recordsQuant + 1
-
 	}
 
 	return recordsQuant
