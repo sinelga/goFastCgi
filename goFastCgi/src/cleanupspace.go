@@ -59,10 +59,9 @@ func main() {
 		defer rows.Close()
 
 		for rows.Next() {
+			
 			var site Site
-
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo)
-
 			sitearr = append(sitearr, site)
 
 		}
@@ -107,8 +106,6 @@ func main() {
 			for _, site := range sitearr {
 
 				htmlfile = "www/" + site.Locale + "/" + site.Themes + "/" + site.Site + site.Pathinfo
-
-				log.Println(htmlfile)
 
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
