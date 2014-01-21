@@ -133,7 +133,7 @@ func main() {
 						} else {
 
 //							log.Println("file deleted ", htmlfile)
-							golog.Info("file deleted " + htmlfile)
+//							golog.Info("file deleted " + htmlfile)
 
 							cleandb.Makeclean(db, site.Id)
 
