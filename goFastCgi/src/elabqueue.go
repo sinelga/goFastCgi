@@ -35,8 +35,6 @@ func main() {
 
 		for _, keystr := range qfirstpagesbin {
 
-//			golog.Info("Create page: " + keystr)
-
 			if webpagebytes, err := redis.Bytes(c.Do("HGET", "firstpagebin", keystr)); err != nil {
 
 				golog.Crit(err.Error())

@@ -88,3 +88,12 @@ type WebContents struct {
 	Paragraphs []Paragraph
 
 }
+
+type Domaincsv struct {
+	Locale string
+	Themes string
+	Domain string
+	Ip string
+	
+}
+

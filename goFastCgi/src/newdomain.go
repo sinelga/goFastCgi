@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
-
 	"database/sql"
 	"flag"
 	"github.com/garyburd/redigo/redis"
@@ -38,10 +37,9 @@ func main() {
 		var host string
 		rows.Scan(&host)
 		hostsarr = append(hostsarr, host)
-
 	}
 	rows.Close()
-	//	log.Println("hosts", len(hostsarr))
+
 	db.Close()
 
 	c, err := redis.Dial("tcp", ":6379")
