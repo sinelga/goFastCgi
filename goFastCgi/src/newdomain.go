@@ -53,14 +53,14 @@ func main() {
 
 		newsite = site + "." + *domainFlag
 		log.Println("hosts", newsite)
-		if _, err := c.Do("SADD", "newdomains:fi_FI:porno", newsite); err != nil {
+		if _, err := c.Do("SADD",queuename, newsite); err != nil {
 
 			log.Fatal(err)
 
 		}
 	}
 
-	if expset, err := c.Do("EXPIRE", "newdomains:fi_FI:porno", *expireFlag); err != nil {
+	if expset, err := c.Do("EXPIRE",queuename, *expireFlag); err != nil {
 
 	} else {
 
