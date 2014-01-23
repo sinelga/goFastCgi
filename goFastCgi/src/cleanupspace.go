@@ -110,8 +110,7 @@ func main() {
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
 					if os.IsNotExist(err) {
-						//						
-//						log.Println("file does not exist??? Cant be!!! but delete record from DB anyway!! id ->", site.Id)
+
 						golog.Info("file does not exist??? Cant be!!! but delete record from DB anyway!! id -> "+strconv.Itoa(site.Id))
 						cleandb.Makeclean(db, site.Id)
 

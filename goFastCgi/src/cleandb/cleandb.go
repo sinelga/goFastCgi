@@ -59,7 +59,6 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 		stmt.Close()
 
 		stmt, err = tx.Prepare("delete from sites where id=?")
-//		log.Println("delete site", siteid)
 
 		if _, err = stmt.Exec(siteid); err != nil {
 			log.Fatal(err)
