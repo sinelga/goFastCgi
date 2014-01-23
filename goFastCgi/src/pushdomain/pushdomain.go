@@ -8,6 +8,8 @@ import (
 
 func SelectDomain(golog syslog.Writer, locale string, themes string) string {
 
+	var domaintopush string
+
 	db, err := sql.Open("sqlite3", "pushdomains.db")
 	defer db.Close()
 	if err != nil {
@@ -25,7 +27,7 @@ func SelectDomain(golog syslog.Writer, locale string, themes string) string {
 		}
 		defer rows.Close()
 
-		var domaintopush string
+		
 		for rows.Next() {
 
 			rows.Scan(&domaintopush)
@@ -55,5 +57,5 @@ func SelectDomain(golog syslog.Writer, locale string, themes string) string {
 
 	}
 
-	return "test.com"
+	return domaintopush
 }
