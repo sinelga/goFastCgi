@@ -5,7 +5,7 @@ apt-get autoclean
  echo 524288 > /proc/sys/fs/inotify/max_user_watches
   vi /etc/sysctl.conf
   fs.inotify.max_user_watches=1200000
-  vm.overcommit_memory = 1
+  vm.overcommit_memory = 1  ??
   sysctl -p
   
 redis.conf  
