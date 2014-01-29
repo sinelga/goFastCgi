@@ -6,6 +6,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"htmlfileexist"
 	"io/ioutil"
+	"path"
 	"log"
 	"log/syslog"
 	"makenewsite"
@@ -40,7 +41,13 @@ func main() {
 				golog.Crit(err.Error())
 
 			} else {
-
+				
+				golog.Info("elabqueue:firstpagebin: create file "+ keystr)
+				
+				dirpath := path.Dir(keystr)
+				golog.Info("elabqueue:firstpagebin: dir " +dirpath )
+				
+				
 				if err := ioutil.WriteFile(keystr, webpagebytes, 0666); err != nil {
 					golog.Crit(err.Error())
 				} else {

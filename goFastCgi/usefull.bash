@@ -13,12 +13,14 @@ redis.conf
 #save 300 10
 #save 60 10000
 #save ""
-maxmemory 500m  #"500000000"
+maxmemory 500m  #"500000000 200000000"
 maxmemory-policy allkeys-lru
 
 
 
 find cache -type f -delete
+
+find www -type d -empty -exec rmdir {} \;
 
 create index siteinx on sites(Site);
 create index pathinfoinx on sites(Pathinfo);
