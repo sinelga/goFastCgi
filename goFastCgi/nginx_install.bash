@@ -41,3 +41,9 @@ adduser --system --no-create-home --disabled-login --disabled-password --group n
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module
 
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module --with-http_image_filter_module 
+
+
+!!! delete file from html dir --->index.html etc..
+
+
+
