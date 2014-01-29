@@ -42,7 +42,7 @@ func main() {
 
 			} else {
 
-				golog.Info("elabqueue:firstpagebin: create file " + keystr)
+//				golog.Info("elabqueue:firstpagebin: create file " + keystr)
 
 				dirpath := path.Dir(keystr)
 				golog.Info("elabqueue:firstpagebin: dir " + dirpath)
@@ -50,14 +50,22 @@ func main() {
 				if _, err := os.Stat(dirpath); err != nil {
 					if os.IsNotExist(err) {
 						// file does not exist
+						golog.Info("elabqueue:firstpagebin: OK create dir " +dirpath)
+						err := os.MkdirAll(dirpath, 0777)
+						if err != nil {
+
+							golog.Err("!!!elabqueue:firstpagebin: "+err.Error())
+						}
+
 					} else {
 						// other error
-					}				
-					
+						golog.Err("!!!elabqueue:firstpagebin: "+err.Error())
+					}
+
 				} else {
-				
-					golog.Alert("!!!elabqueue:firstpagebin: Hmm dir exist ???"+dirpath)
-				
+
+					golog.Alert("!!!elabqueue:firstpagebin: Hmm dir exist ???" + dirpath)
+
 				}
 
 				if err := ioutil.WriteFile(keystr, webpagebytes, 0666); err != nil {
