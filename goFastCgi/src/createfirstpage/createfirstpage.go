@@ -5,12 +5,9 @@ import (
 	"comutils"
 	"domains"
 	"html/template"
-	//	"log"
 	"checkpathinfo"
 	"log/syslog"
 	"math/rand"
-//	"os"
-//	"path/filepath"
 	"queue/findfreeparagraph"
 	"queue/makenewsite"
 	"strings"
@@ -26,16 +23,6 @@ func CreatePage(golog syslog.Writer, locale string, themes string, host string, 
 	))
 
 	thispathinfo := checkpathinfo.Check(pathinfo)
-
-//	htmlfile := string("www/" + locale + "/" + themes + "/" + host + thispathinfo)
-
-//	path := filepath.Dir(htmlfile)
-//
-//	err := os.MkdirAll(path, 0777)
-//	if err != nil {
-//
-//		golog.Err(err.Error())
-//	}
 
 	ext := string(".html")
 

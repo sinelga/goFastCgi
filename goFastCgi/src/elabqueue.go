@@ -42,29 +42,22 @@ func main() {
 
 			} else {
 
-//				golog.Info("elabqueue:firstpagebin: create file " + keystr)
-
 				dirpath := path.Dir(keystr)
-				golog.Info("elabqueue:firstpagebin: dir " + dirpath)
+				//				golog.Info("elabqueue:firstpagebin: dir " + dirpath)
 
 				if _, err := os.Stat(dirpath); err != nil {
 					if os.IsNotExist(err) {
 						// file does not exist
-						golog.Info("elabqueue:firstpagebin: OK create dir " +dirpath)
+						//						golog.Info("elabqueue:firstpagebin: OK create dir " +dirpath)
 						err := os.MkdirAll(dirpath, 0777)
 						if err != nil {
-
-							golog.Err("!!!elabqueue:firstpagebin: "+err.Error())
+							golog.Err("!!!elabqueue:firstpagebin: " + err.Error())
 						}
 
 					} else {
 						// other error
-						golog.Err("!!!elabqueue:firstpagebin: "+err.Error())
+						golog.Err("!!!elabqueue:firstpagebin: " + err.Error())
 					}
-
-				} else {
-
-					golog.Alert("!!!elabqueue:firstpagebin: Hmm dir exist ???" + dirpath)
 
 				}
 
@@ -98,7 +91,7 @@ func main() {
 			var unmar domains.FirstPage
 			err := json.Unmarshal(bfirstpage, &unmar)
 			if err != nil {
-				//				log.Fatal(err)
+
 				golog.Crit(err.Error())
 
 			}
@@ -122,11 +115,9 @@ func main() {
 			err := json.Unmarshal(msite, &unmar)
 			if err != nil {
 				golog.Crit(err.Error())
-
 			}
 
 			htmlfile := string("www/" + unmar.Locale + "/" + unmar.Themes + "/" + unmar.Domain + unmar.Pathinfo)
-
 			htmlfileexist.StartCheck(*golog, htmlfile, unmar.Domain, unmar.Pathinfo)
 
 		}
