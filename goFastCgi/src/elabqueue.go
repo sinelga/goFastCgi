@@ -6,10 +6,11 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"htmlfileexist"
 	"io/ioutil"
-	"path"
 	"log"
 	"log/syslog"
 	"makenewsite"
+	"os"
+	"path"
 )
 
 func main() {
@@ -28,7 +29,6 @@ func main() {
 		golog.Crit(err.Error())
 	}
 
-
 	golog.Info("elabque: Start firstpagebin")
 	if qfirstpagesbin, err := redis.Strings(c.Do("HKEYS", "firstpagebin")); err != nil {
 		golog.Crit(err.Error())
@@ -41,13 +41,25 @@ func main() {
 				golog.Crit(err.Error())
 
 			} else {
-				
-				golog.Info("elabqueue:firstpagebin: create file "+ keystr)
-				
+
+				golog.Info("elabqueue:firstpagebin: create file " + keystr)
+
 				dirpath := path.Dir(keystr)
-				golog.Info("elabqueue:firstpagebin: dir " +dirpath )
+				golog.Info("elabqueue:firstpagebin: dir " + dirpath)
+
+				if _, err := os.Stat(dirpath); err != nil {
+					if os.IsNotExist(err) {
+						// file does not exist
+					} else {
+						// other error
+					}				
+					
+				} else {
 				
+					golog.Alert("!!!elabqueue:firstpagebin: Hmm dir exist ???"+dirpath)
 				
+				}
+
 				if err := ioutil.WriteFile(keystr, webpagebytes, 0666); err != nil {
 					golog.Crit(err.Error())
 				} else {
