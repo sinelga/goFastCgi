@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"domains"
 	"log/syslog"
-	"time"
 	"strconv"
+	"time"
 )
 
 func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) domains.WebContents {
@@ -35,7 +35,7 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 	recordsQuant := int(0)
 
 	for rows.Next() {
-		recordsQuant = recordsQuant +1
+		recordsQuant = recordsQuant + 1
 		rows.Scan(&rowid, &created, &updated, &hits, &locale, &themes, &title, &site, &allhits)
 		webcontents = domains.WebContents{
 
@@ -53,7 +53,7 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 
 	}
 	rows.Close()
-	
+
 	if rowid > 0 {
 
 		tx, err := db.Begin()
@@ -84,10 +84,10 @@ func Checkdb(golog syslog.Writer, db *sql.DB, host string, pathinfo string) doma
 		golog.Warning("!!!checkdbexist:Checkdb Record for " + host + pathinfo + " dont exist in sites")
 
 	}
-	
+
 	if recordsQuant > 1 {
-	
-		golog.Warning("!!!checkdbexist:Checkdb check -->" +host + pathinfo+" quant->"+strconv.Itoa(recordsQuant))
+
+		golog.Warning("!!!checkdbexist:Checkdb check -->" + host + pathinfo + " quant->" + strconv.Itoa(recordsQuant))
 	}
 
 	return webcontents

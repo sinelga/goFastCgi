@@ -12,7 +12,10 @@ redis.conf
 #save 900 1
 #save 300 10
 #save 60 10000
-save ""
+#save ""
+maxmemory 500m  #"500000000"
+maxmemory-policy allkeys-lru
+
 
 
 find cache -type f -delete

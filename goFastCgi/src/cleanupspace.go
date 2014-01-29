@@ -75,7 +75,7 @@ func main() {
 			rows, err = db.Query(sqlstr)
 
 			if err != nil {
-				golog.Err(err.Error())
+				golog.Err("cleanupspace: "+err.Error())
 			}
 			defer rows.Close()
 
@@ -86,7 +86,7 @@ func main() {
 				rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo, &count)
 
 				if count > 1 {
-					golog.Info("cleanupspace:!!!Bad delete all -->" + site.Site + site.Pathinfo + " count " + strconv.Itoa(count))
+					golog.Info("!!!cleanupspace: Bad ?? delete all -->" + site.Site + site.Pathinfo + " count " + strconv.Itoa(count))
 					sitearr = append(sitearr, site)
 
 				}
@@ -111,7 +111,7 @@ func main() {
 
 					if os.IsNotExist(err) {
 
-						golog.Info("file does not exist??? Cant be!!! but delete record from DB anyway!! id -> "+strconv.Itoa(site.Id))
+						golog.Info("cleanupspace: file does not exist??? Cant be!!! but delete record from DB anyway!! id -> "+strconv.Itoa(site.Id))
 						cleandb.Makeclean(db, site.Id)
 
 					}
@@ -120,16 +120,12 @@ func main() {
 
 					if !finfo.IsDir() {
 
-//						log.Println("Exist not dir")
 						if err := os.Remove(htmlfile); err != nil {
 
-//							log.Println(err.Error())
 							golog.Err(err.Error())
 
 						} else {
 
-//							log.Println("file deleted ", htmlfile)
-//							golog.Info("file deleted " + htmlfile)
 
 							cleandb.Makeclean(db, site.Id)
 

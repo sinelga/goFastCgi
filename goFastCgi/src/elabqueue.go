@@ -61,7 +61,6 @@ func main() {
 
 	golog.Info("elabque: Start firstpage")
 	if qfirstpages, err := redis.Int(c.Do("SCARD", "firstpage")); err != nil {
-		//		log.Fatal(err)
 		golog.Crit(err.Error())
 
 	} else {
