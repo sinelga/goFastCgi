@@ -8,6 +8,8 @@ make install-libdrizzle-1.0
 ======================================
 dpkg-reconfigure tzdata
 
+
+add-apt-repository ppa:chris-lea/redis-server
 apt-get install redis-server
 
 apt-get install build-essential
@@ -41,6 +43,11 @@ adduser --system --no-create-home --disabled-login --disabled-password --group n
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module
 
 ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_gzip_static_module --with-http_image_filter_module 
+
+
+#Lua + redis nginx 
+./configure --prefix=/opt/nginx --user=nginx --group=nginx --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.5rc1 --with-http_gzip_static_module --add-module=../echo --add-module=../lua-resty-redis --with-http_image_filter_module
+
 
 
 !!! delete file from html dir --->index.html etc..

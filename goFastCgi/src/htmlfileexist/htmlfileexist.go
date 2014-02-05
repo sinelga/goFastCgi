@@ -55,7 +55,7 @@ func StartCheck(golog syslog.Writer, htmlfile string, host string, pathinfo stri
 
 	} else {
 
-		golog.Alert("!!!htmlfileexist:StartCheck: no record for " + htmlfile + " let's delete file")
+//		golog.Alert("!!!htmlfileexist:StartCheck: no record for " + htmlfile + " let's delete file")
 		
 		DeleteHtmlFile(golog,htmlfile)
 		
