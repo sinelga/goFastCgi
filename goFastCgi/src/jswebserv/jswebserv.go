@@ -40,7 +40,7 @@ func JsServ(golog syslog.Writer, w http.ResponseWriter, r *http.Request, rootdir
 		}
 		http.ServeFile(w, r, rootdir+"dartapp.html")
 
-	} else if strings.HasSuffix(pathstr, ".dart") {
+	} else if strings.HasSuffix(pathstr, ".dart") {  // ??? Must be tested else!!
 	
 		golog.Info("DART !!? "+pathstr)
 		http.ServeFile(w, r, pathstr)
