@@ -1,0 +1,16 @@
+dvanced Configuration
+
+If you need to override the values within the script you should use /etc/defaults/nginx.
+
+You can override any of these values:
+
+PATH
+DAEMON
+PS
+PIDNAME
+PIDFILE
+PIDSPATH
+DESCRIPTION
+RUNAS
+lockfile
+NGINX_CONF_FILE
