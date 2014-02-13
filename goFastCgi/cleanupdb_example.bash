@@ -12,4 +12,6 @@ rm -fr markresources/fi_FI_finance/
 rm -fr markresources/fi_FI_fortune/
 rm -fr markresources/it_IT_finance/
 
+bin/syncpushdomaindb 
+
 
