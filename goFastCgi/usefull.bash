@@ -43,6 +43,8 @@ echo .dump | sqlite3 singo.db >backup.sql
 echo '.dump' | sqlite3 gofast.db | gzip -c >gofast.dump.gz
 rm gofast.db
 zcat gofast.dump.gz | sqlite3 gofast.db
+
+sqlite3 gofast.db .dump | sqlite3 newdb; mv newdb gofast.db
 ##
 
 

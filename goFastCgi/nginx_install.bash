@@ -14,6 +14,8 @@ apt-get install redis-server
 
 apt-get install build-essential
 
+apt-get install sqlite3 libsqlite3-dev
+
 apt-get install libpcre3-dev libssl-dev
 
 apt-get install git-core
