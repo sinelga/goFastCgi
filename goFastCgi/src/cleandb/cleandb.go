@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"strconv"
+	"os"
 )
 
 func Makeclean(db *sql.DB, siteid int) {
@@ -16,6 +17,7 @@ func Makeclean(db *sql.DB, siteid int) {
 	rows, err := db.Query(sqlstr)
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(-1)
 	}
 	defer rows.Close()
 
@@ -36,6 +38,7 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(-1)
 	}
 
 	for _, parid := range paragraphsidtodelete {
@@ -44,6 +47,7 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 
 		if _, err = stmt.Exec(parid); err != nil {
 			log.Fatal(err)
+			os.Exit(-1)
 
 		}
 
@@ -53,6 +57,7 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 
 		if _, err = stmt.Exec(siteid); err != nil {
 			log.Fatal(err)
+			os.Exit(-1)
 
 		}
 
@@ -62,6 +67,7 @@ func deleteall(db *sql.DB, siteid int, paragraphsidtodelete []int) {
 
 		if _, err = stmt.Exec(siteid); err != nil {
 			log.Fatal(err)
+			os.Exit(-1)
 
 		}
 		stmt.Close()

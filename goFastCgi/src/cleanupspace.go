@@ -73,9 +73,9 @@ func main() {
 			sqlstr = "SELECT rowid,Locale,Themes,Site,Pathinfo,count(*) FROM sites group by Site,Pathinfo"
 
 			rows, err = db.Query(sqlstr)
-
 			if err != nil {
 				golog.Err("cleanupspace: "+err.Error())
+				os.Exit(-1)
 			}
 			defer rows.Close()
 

@@ -5,7 +5,7 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"flag"
-	"fmt"
+//	"fmt"
 	"log"
 	"log/syslog"
 	"os"
@@ -20,18 +20,11 @@ type Site struct {
 	Pathinfo string
 }
 
-const APP_VERSION = "0.1"
 
-// The flag package provides a default help printer via -h switch
-var versionFlag *bool = flag.Bool("v", false, "Print the version number.")
 var updatedflag = flag.Int("updated", 0, "created in hours ago mast must be > 0 normal 120-144 and more")
 
 func main() {
 	flag.Parse() // Scan the arguments list
-
-	if *versionFlag {
-		fmt.Println("Version:", APP_VERSION)
-	}
 
 	if *updatedflag > 0 {
 
@@ -59,6 +52,7 @@ func main() {
 		if err != nil {
 
 			golog.Err(err.Error())
+			os.Exit(-1)
 		}
 		defer rows.Close()
 
@@ -79,7 +73,7 @@ func main() {
 
 				htmlfile = "www/" + site.Locale + "/" + site.Themes + "/" + site.Site + site.Pathinfo
 				
-				golog.Info("delete-> "+htmlfile) 
+//				golog.Info("delete-> "+htmlfile) 
 
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
