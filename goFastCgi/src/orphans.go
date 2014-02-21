@@ -5,7 +5,7 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"database/sql"
 	"flag"
-//	"fmt"
+	//	"fmt"
 	"log"
 	"log/syslog"
 	"os"
@@ -20,7 +20,6 @@ type Site struct {
 	Pathinfo string
 }
 
-
 var updatedflag = flag.Int("updated", 0, "created in hours ago mast must be > 0 normal 120-144 and more")
 
 func main() {
@@ -33,11 +32,17 @@ func main() {
 		defer golog.Close()
 		if err != nil {
 			log.Fatal("error writing syslog!!")
+			os.Exit(-1)
+		} else {
+
+			golog.Info("Start orphans")
+
 		}
 
 		db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 		if err != nil {
 			golog.Err(err.Error())
+			os.Exit(-1)
 		}
 		defer db.Close()
 
@@ -72,8 +77,6 @@ func main() {
 			for _, site := range sitearr {
 
 				htmlfile = "www/" + site.Locale + "/" + site.Themes + "/" + site.Site + site.Pathinfo
-				
-//				golog.Info("delete-> "+htmlfile) 
 
 				if finfo, err := os.Stat(htmlfile); err != nil {
 
@@ -106,6 +109,7 @@ func main() {
 
 		}
 
+		golog.Info("End orphans")
 	}
 
 }
