@@ -15,7 +15,9 @@ func FindFromQ(locale string, themes string) (domains.Paragraph,string)  {
 	}
 
 	queuename := locale + ":" + themes
-	newdomainsqueuename := "newdomains:" + queuename
+//	newdomainsqueuename := "newdomains:" + queuename
+	newdomainsqueuename := "newdomains"
+	
 	var newdomain string
 	
 	if quan_newdomains,err := redis.Int(c.Do("SCARD", newdomainsqueuename)); err != nil {

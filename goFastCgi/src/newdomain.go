@@ -34,7 +34,8 @@ func main() {
 	domain := *domainFlag
 	expire := *expireFlag
 
-	queuename := "newdomains:" + locale + ":" + themes
+//	queuename := "newdomains:" + locale + ":" + themes
+	queuename := "newdomains"
 	
 	if domain == "" {
 	
@@ -42,7 +43,6 @@ func main() {
 	
 	} 
 		
-
 	db, err := sql.Open("sqlite3", "singo.db")
 	defer db.Close()
 	if err != nil {
