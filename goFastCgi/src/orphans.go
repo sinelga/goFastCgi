@@ -38,7 +38,7 @@ func main() {
 			golog.Info("Start orphans")
 
 		}
-
+		
 		db, err := sql.Open("sqlite3", "file:gofast.db?cache=shared&mode=rwc")
 		if err != nil {
 			golog.Err(err.Error())

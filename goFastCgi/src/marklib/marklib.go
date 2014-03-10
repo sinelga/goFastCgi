@@ -17,8 +17,6 @@ type Tsentences struct {
 	Sentences []string
 }
 
-
-
 func (p Prefix) String() string {
 	return strings.Join(p, " ")
 }

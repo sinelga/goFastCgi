@@ -1,30 +1,13 @@
 package markgen
 
 import (
-	//	"bufio"
-	//	"bytes"
-	//	"encoding/json"
-	////	"flag"
-	//	"fmt"
-	//	"io"
-//	"io/ioutil"
-//	"math/rand"
-	//	"net/http"
-	////	"os"
-	"strings"
-	//	//	"strconv"
-//	"log"
 	ml "marklib"
-//	"time"
+	"strings"
 )
-
-//type Tsentences struct {
-//	Sentences []string
-//}
 
 var markfile string
 
-func Generate(c *ml.Chain,locale string, themes string) []string {
+func Generate(c *ml.Chain, locale string, themes string) []string {
 	numWords := 1000
 
 	for i := 0; i < 5; i++ {
@@ -40,14 +23,12 @@ func Generate(c *ml.Chain,locale string, themes string) []string {
 			if i > 0 && i < len(sentences) {
 
 				sentenses_1[i-1] = sentence
-//				log.Println(sentenses_1[i-1]) 
+				//				log.Println(sentenses_1[i-1])
 
 			}
 		}
 		return sentenses_1
 	}
-	
+
 	return nil
-	}
-
-
+}

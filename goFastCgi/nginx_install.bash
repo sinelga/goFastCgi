@@ -7,6 +7,8 @@ make libdrizzle-1.0
 make install-libdrizzle-1.0
 ======================================
 dpkg-reconfigure tzdata
+echo 'export TZ="EET"' >> /etc/default/rsyslog
+restart rsyslog
 
 
 add-apt-repository ppa:chris-lea/redis-server
@@ -19,8 +21,6 @@ apt-get install sqlite3 libsqlite3-dev
 apt-get install libpcre3-dev libssl-dev
 
 apt-get install git-core
-
-apt-get install sqlite3 libsqlite3-dev
 
 git clone https://github.com/agentzh/echo-nginx-module.git
 
