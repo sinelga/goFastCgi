@@ -90,22 +90,22 @@ func main() {
 				break
 			} else if err != nil {
 				golog.Crit(err.Error())
-				//				panic(err)
+		
 			}
 
 			hitsflagint, err = strconv.Atoi(fields[0])
 			if err != nil {
-//				panic(err)
+
 				golog.Crit("cleanupspace: "+err.Error())
 			}
 			createdflagint, err = strconv.Atoi(fields[1])
 			if err != nil {
-//				panic(err)
+
 				golog.Crit("cleanupspace: "+err.Error())
 			}
 			deepflagint, err = strconv.Atoi(fields[2])
 			if err != nil {
-//				panic(err)
+
 				golog.Crit("cleanupspace: "+err.Error())
 			}
 			updatedflagstr = fields[3]
@@ -113,7 +113,7 @@ func main() {
 		}
 		csvFile.Close()
 						
-		golog.Info("createdflagint " + strconv.Itoa(createdflagint))
+		golog.Info("hitsflagint "+ strconv.Itoa(hitsflagint) +" createdflagint " + strconv.Itoa(createdflagint))
 		
 		csvFile, err = os.Create("cleanupspace.csv")
 		defer csvFile.Close()
