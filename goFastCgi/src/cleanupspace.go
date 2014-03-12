@@ -11,6 +11,7 @@ import (
 	"log/syslog"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Site struct {
@@ -25,6 +26,7 @@ var hitsflag = flag.Int("hits", 0, "hits must be >= 0 normal 10 and more")
 var createdflag = flag.Int("created", 0, "created in hours ago mast must be > 0 normal 120-144 and more")
 var deepflag = flag.Int("deep", 0, "param to make deep clean if 0 nothing will be done")
 var updatedflagstr string
+var oldfile bool
 
 func main() {
 
@@ -42,7 +44,9 @@ func main() {
 	deepflagint := *deepflag
 
 	golog.Info("Start cleanupspace")
-	
+
+	oldfile = false
+
 	if hitsflagint >= 0 && createdflagint > 0 {
 
 		cleaner(*golog, hitsflagint, createdflagint, deepflagint)
@@ -56,17 +60,17 @@ func main() {
 				csvFile, err := os.Create("cleanupspace.csv")
 				defer csvFile.Close()
 				if err != nil {
-					
-					golog.Crit("cleanupspace: "+err.Error())
+
+					golog.Crit("cleanupspace: " + err.Error())
 				}
 				writer := csv.NewWriter(csvFile)
 
-				csvstring := []string{"1", "720", "0", "720"}
+				csvstring := []string{"1", "720", "0", "800"}
 
 				err = writer.Write(csvstring)
 				if err != nil {
-//					panic(err)
-					golog.Crit("cleanupspace: "+err.Error())
+
+					golog.Crit("cleanupspace: " + err.Error())
 				}
 				writer.Flush()
 				csvFile.Close()
@@ -75,11 +79,28 @@ func main() {
 
 		}
 
+		finfo, err := os.Stat("cleanupspace.csv")
+		if err != nil {
+			// TODO: handle errors (e.g. file not found)
+			golog.Crit("cleanupspace: " + err.Error())
+		}
+
+		lasmod := finfo.ModTime().Unix()
+
+		if (time.Now().Unix() - lasmod) > 84400 {
+
+			golog.Info("old don't change createdflagint in cleanupspace.csv")
+			oldfile = true
+		} else {
+
+			golog.Info("resently updated (less 1 day)  cleanupspace.csv modify !!")
+		}
+
 		csvFile, err := os.Open("cleanupspace.csv")
 		defer csvFile.Close()
 		if err != nil {
-			
-			golog.Crit("cleanupspace: "+err.Error())
+
+			golog.Crit("cleanupspace: " + err.Error())
 		}
 		csvReader := csv.NewReader(csvFile)
 
@@ -90,55 +111,59 @@ func main() {
 				break
 			} else if err != nil {
 				golog.Crit(err.Error())
-		
+
 			}
 
 			hitsflagint, err = strconv.Atoi(fields[0])
 			if err != nil {
 
-				golog.Crit("cleanupspace: "+err.Error())
+				golog.Crit("cleanupspace: " + err.Error())
 			}
 			createdflagint, err = strconv.Atoi(fields[1])
 			if err != nil {
 
-				golog.Crit("cleanupspace: "+err.Error())
+				golog.Crit("cleanupspace: " + err.Error())
 			}
 			deepflagint, err = strconv.Atoi(fields[2])
 			if err != nil {
 
-				golog.Crit("cleanupspace: "+err.Error())
+				golog.Crit("cleanupspace: " + err.Error())
 			}
 			updatedflagstr = fields[3]
 
 		}
 		csvFile.Close()
-						
-		golog.Info("hitsflagint "+ strconv.Itoa(hitsflagint) +" createdflagint " + strconv.Itoa(createdflagint))
-		
+
+		golog.Info("hitsflagint " + strconv.Itoa(hitsflagint) + " createdflagint " + strconv.Itoa(createdflagint))
+
 		csvFile, err = os.Create("cleanupspace.csv")
 		defer csvFile.Close()
 		if err != nil {
-//			panic(err)
-			golog.Crit("cleanupspace: "+err.Error())
+
+			golog.Crit("cleanupspace: " + err.Error())
 		}
-		var newcreatedflagint int = 15
-		if createdflagint > 10 {
-		
-			newcreatedflagint = createdflagint-5
+		var newcreatedflagint int
+
+		if !oldfile {
+			newcreatedflagint = createdflagint - 5
+
+		} else {
+
+			newcreatedflagint = createdflagint
 		}
-		
+
 		writer := csv.NewWriter(csvFile)
 
 		csvstring := []string{strconv.Itoa(hitsflagint), strconv.Itoa(newcreatedflagint), strconv.Itoa(deepflagint), updatedflagstr}
 
 		err = writer.Write(csvstring)
 		if err != nil {
-//			panic(err)
-			golog.Crit("cleanupspace: "+err.Error())
+
+			golog.Crit("cleanupspace: " + err.Error())
 		}
 		writer.Flush()
 		csvFile.Close()
-		
+
 		cleaner(*golog, hitsflagint, createdflagint, deepflagint)
 
 	}
@@ -160,8 +185,6 @@ func cleaner(golog syslog.Writer, hitsflagint int, createdflagint int, deepflagi
 
 	//		sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits >=" + strconv.Itoa(*hitsflag) + " or Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
 	sqlstr := "select rowid,Locale,Themes,Site,Pathinfo from sites where hits <" + strconv.Itoa(hitsflagint) + " and Created < (strftime('%s','now') -" + strconv.Itoa(seccreated) + ")"
-
-//	golog.Info("cleanupspace: Start " + sqlstr)
 
 	rows, err := db.Query(sqlstr)
 	if err != nil {
@@ -194,7 +217,7 @@ func cleaner(golog syslog.Writer, hitsflagint int, createdflagint int, deepflagi
 		for rows.Next() {
 			var site Site
 			var count int
-
+			
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo, &count)
 
 			if count > 1 {
@@ -222,10 +245,8 @@ func cleaner(golog syslog.Writer, hitsflagint int, createdflagint int, deepflagi
 			if finfo, err := os.Stat(htmlfile); err != nil {
 
 				if os.IsNotExist(err) {
-
 					golog.Info("cleanupspace: file does not exist??? Cant be!!! but delete record from DB anyway!! id -> " + strconv.Itoa(site.Id))
 					cleandb.Makeclean(db, site.Id)
-
 				}
 
 			} else {
@@ -241,15 +262,10 @@ func cleaner(golog syslog.Writer, hitsflagint int, createdflagint int, deepflagi
 						cleandb.Makeclean(db, site.Id)
 
 					}
-
 				}
-
 			}
-
 		}
-
 	}
-
 }
 
 //	golog.Info("cleanupspace: END cleanupspace ")
