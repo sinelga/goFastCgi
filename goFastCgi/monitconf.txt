@@ -1,0 +1,21 @@
+/etc/monit/monitrc
+
+set httpd port 8081 and
+    use address localhost  # only accept connection from localhost
+    allow localhost        # allow localhost to connect to the server and
+    allow admin:monit      # require user "admin" with password "monit"
+    
+ 
+ /etc/monit/conf.d/redis.conf   
+    
+ check process redis-server with pidfile "/var/run/redis/redis-server.pid"
+    start program = "/etc/init.d/redis-server start"
+    stop program = "/etc/init.d/redis-server stop"
+    if failed host 127.0.0.1 port 6379 then restart
+    if 5 restarts within 5 cycles then timeout
+    
+     
+  service monit reload
+  monit status
+  
+      

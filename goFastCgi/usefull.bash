@@ -21,6 +21,8 @@ maxmemory-policy allkeys-lru
 find cache -type f -delete
 
 find www -type d -empty -exec rmdir {} \;
+find www -type d -empty -exec rmdir -vp --ignore-fail-on-non-empty {} +
+find www -type d -empty -delete
 
 create index siteinx on sites(Site);
 create index pathinfoinx on sites(Pathinfo);
