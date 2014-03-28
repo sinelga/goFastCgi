@@ -145,7 +145,9 @@ func main() {
 		var newcreatedflagint int
 
 		if !oldfile {
-			newcreatedflagint = createdflagint - 5
+			if createdflagint > 9 {
+				newcreatedflagint = createdflagint - 5
+			}
 
 		} else {
 
@@ -217,7 +219,7 @@ func cleaner(golog syslog.Writer, hitsflagint int, createdflagint int, deepflagi
 		for rows.Next() {
 			var site Site
 			var count int
-			
+
 			rows.Scan(&site.Id, &site.Locale, &site.Themes, &site.Site, &site.Pathinfo, &count)
 
 			if count > 1 {
