@@ -17,8 +17,11 @@ maxmemory 500m  #"500000000 200000000"
 maxmemory-policy allkeys-lru
 
 
+ df -i /   check free inodes
+
 
 find cache -type f -delete
+
 
 find www -type d -empty -exec rmdir {} \;
 find www -type d -empty -exec rmdir -vp --ignore-fail-on-non-empty {} +

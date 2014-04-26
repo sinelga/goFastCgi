@@ -6,7 +6,8 @@ import (
 
 func Clean(sentence string) string {
 
-	restring := strings.Replace(sentence, "-", " ", -1)
+	restring := strings.Replace(sentence, ".", " ", -1)
+	restring = strings.Replace(sentence, "-", " ", -1)
 	restring = strings.Replace(restring, "∇", " ", -1)
 	restring = strings.Replace(restring, "*", " ", -1)
 
@@ -23,7 +24,7 @@ func Clean(sentence string) string {
 		restring = strings.Replace(restring, " ", "", 1)
 	}
 
-	restring = restring +"."
+//	restring = restring +"."
 
 	return restring
 }
