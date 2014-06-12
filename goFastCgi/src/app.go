@@ -4,7 +4,6 @@ import (
 	_ "code.google.com/p/go-sqlite/go1/sqlite3"
 	"createfirstpage"
 	"database/sql"
-	//	"encoding/json"
 	"clean_pathinfo"
 	"log"
 	"log/syslog"
